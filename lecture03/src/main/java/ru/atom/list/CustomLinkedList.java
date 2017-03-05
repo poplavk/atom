@@ -9,20 +9,35 @@ import java.util.ListIterator;
 
 
 public class CustomLinkedList<E> implements List<E> {
+    private int size = 0;
+    private ListNode header = new ListNode(null, null, null);
+    private ListNode lastNode = header;
+//    private ListNode[] listNodes = new ListNode[capacity];
 
     @Override
     public int size() {
-        throw new NotImplementedException();
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        throw new NotImplementedException();
+        return (size == 0);
     }
 
     @Override
     public boolean contains(Object o) {
-        throw new NotImplementedException();
+        ListNode currentNode = header.getNextNode();
+        if (currentNode.getValue() == o) {
+            return true;
+        }
+        for (int i = 1; i < size - 1; i++) {
+            currentNode = currentNode.getNextNode();
+            if (currentNode.getValue() == o) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     @Override
@@ -32,7 +47,23 @@ public class CustomLinkedList<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        throw new NotImplementedException();
+        try {
+            if (this.isEmpty()) {
+                lastNode = new ListNode(e, null, header);
+                header.setNextNode(lastNode);
+                size++;
+                return true;
+            } else {
+                ListNode newListNode = new ListNode(e, null, lastNode);
+                lastNode.setNextNode(newListNode);
+                lastNode = newListNode;
+                size++;
+                return true;
+            }
+        } catch (Exception exception) {
+            return false;
+        }
+
     }
 
     @Override
@@ -47,12 +78,25 @@ public class CustomLinkedList<E> implements List<E> {
 
     @Override
     public void clear() {
-        throw new NotImplementedException();
+        int size = 0;
+        header = new ListNode(null, null, null);
+        lastNode = header;
     }
 
     @Override
     public E get(int index) {
-        throw new NotImplementedException();
+        if (index == 0) {
+            return (E) header.getNextNode().getValue();
+        }
+        if (index == size - 1) {
+            return (E) lastNode.getNextNode().getValue();
+        }
+        ListNode ptrNode = header.getNextNode();
+        for (int i = 1; i < index + 1; i++) {
+            ptrNode = ptrNode.getNextNode();
+        }
+        return (E) ptrNode.getValue();
+
     }
 
     @Override
@@ -62,7 +106,15 @@ public class CustomLinkedList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        throw new NotImplementedException();
+        try {
+            for (E e : c) {
+                this.add(e);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
 
