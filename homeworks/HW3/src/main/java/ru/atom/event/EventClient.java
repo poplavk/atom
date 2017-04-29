@@ -1,35 +1,89 @@
 package ru.atom.event;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import ru.atom.message.Message;
+import ru.atom.message.Topic;
+import ru.atom.message.data.Direction;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.Future;
 
 public class EventClient {
-    public static void main(String[] args) {
-        URI uri = URI.create("ws://localhost:8090/events/");
+    private static final Logger log = LogManager.getLogger(EventClient.class);
 
+    private final URI uri = URI.create("ws://localhost:8090/events/");
+
+    private Session session;
+
+    public void connect() {
         WebSocketClient client = new WebSocketClient();
-        //client.setMasker(new ZeroMasker());
+
         try {
-            try {
-                client.start();
-                // The socket that receives events
-                EventHandler socket = new EventHandler();
-                // Attempt Connect
-                Future<Session> fut = client.connect(socket, uri);
-                // Wait for Connect
-                Session session = fut.get();
-                // Send a message
-                session.getRemote().sendString("Hello");
-                // Close session
-                session.close();
-            } finally {
-                client.stop();
-            }
-        } catch (Throwable t) {
-            t.printStackTrace(System.err);
+            client.start();
+        } catch (Exception e) {
+            log.error("Не удалось выполнить client.start()", e);
+            return;
+        }
+        // The socket that receives events
+        EventHandler socket = new EventHandler();
+        try {
+            // Attempt Connect
+            Future<Session> fut = client.connect(socket, uri);
+            // Wait for Connect
+            session = fut.get();
+
+        } catch (Exception e) {
+            log.error("Не удалось подключиться", e);
+        }
+
+    }
+
+    public void sendHello(String name) {
+        Message message = new Message(Topic.HELLO, name);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = "";
+        try {
+            json = mapper.writeValueAsString(message);
+            log.info(json);
+            session.getRemote().sendString(json);
+        } catch (JsonProcessingException e) {
+            log.error("Ошибка при преобразовании объекта Message в json", e);
+        } catch (IOException e) {
+            log.error("Ошибка при отправке сообщения {}", json);
         }
     }
+    public void sendMove(Direction direction) {
+
+    }
+
+//    public static void main(String[] args) {
+//
+//        WebSocketClient client = new WebSocketClient();
+//        //client.setMasker(new ZeroMasker());
+//        try {
+//            try {
+//                client.start();
+//                // The socket that receives events
+//                EventHandler socket = new EventHandler();
+//                // Attempt Connect
+//                Future<Session> fut = client.connect(socket, uri);
+//                // Wait for Connect
+//                Session session = fut.get();
+//                // Send a message
+//                session.getRemote().sendString("Hello");
+//                // Close session
+//                session.close();
+//            } finally {
+//                client.stop();
+//            }
+//        } catch (Throwable t) {
+//            t.printStackTrace(System.err);
+//        }
+//    }
 }

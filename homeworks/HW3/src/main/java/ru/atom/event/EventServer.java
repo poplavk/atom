@@ -6,8 +6,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 public class EventServer {
-    public static void main(String[] args) {
-        Server server = new Server();
+    public static Server server;
+
+    public static void start() {
+        server = new Server();
         ServerConnector connector = new ServerConnector(server);
         connector.setPort(8090);
         server.addConnector(connector);
@@ -29,5 +31,9 @@ public class EventServer {
         } catch (Throwable t) {
             t.printStackTrace(System.err);
         }
+    }
+
+    public static void main(String[] args) {
+        start();
     }
 }

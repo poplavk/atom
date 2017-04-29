@@ -1,30 +1,35 @@
 package ru.atom.event;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
+import ru.atom.network.ConnectionPool;
 
 public class EventHandler extends WebSocketAdapter {
+    private static final Logger log = LogManager.getLogger(EventHandler.class);
+
     @Override
-    public void onWebSocketConnect(Session sess) {
-        super.onWebSocketConnect(sess);
-        System.out.println("Socket Connected: " + sess);
+    public void onWebSocketConnect(Session session) {
+        super.onWebSocketConnect(session);
+        log.info("Socket Connected: " + session);
     }
 
     @Override
     public void onWebSocketText(String message) {
         super.onWebSocketText(message);
-        System.out.println("Received TEXT message: " + message);
+        log.info("Received TEXT message: " + message);
     }
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
         super.onWebSocketClose(statusCode, reason);
-        System.out.println("Socket Closed: [" + statusCode + "] " + reason);
+        log.info("Socket Closed: [" + statusCode + "] " + reason);
     }
 
     @Override
     public void onWebSocketError(Throwable cause) {
         super.onWebSocketError(cause);
-        cause.printStackTrace(System.err);
+        log.error("", cause);
     }
 }
