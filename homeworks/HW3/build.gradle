@@ -1,5 +1,6 @@
 dependencies {
     compile rootProject.libraries.log4j
+    compile rootProject.libraries.jackson
     compile rootProject.libraries.jetbrainsAnnotations
     compile rootProject.libraries.websocketclient
     compile rootProject.libraries.websocketserver
