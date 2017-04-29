@@ -1,4 +1,24 @@
 dependencies {
     compile rootProject.libraries.log4j
     compile rootProject.libraries.jetbrainsAnnotations
+    compile rootProject.libraries.websocketclient
+    compile rootProject.libraries.websocketserver
+    compile rootProject.libraries.websocketapi
+}
+//jar {
+//    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//    manifest { attributes 'Main-Class': 'ru.atom.lecture08.websocket.EventServer' }
+//}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+    }
 }
