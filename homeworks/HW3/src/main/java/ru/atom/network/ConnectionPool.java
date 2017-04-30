@@ -65,5 +65,6 @@ public class ConnectionPool {
 
     public void remove(Session session) {
         pool.remove(session);
+        log.info("remove session!");
     }
 }

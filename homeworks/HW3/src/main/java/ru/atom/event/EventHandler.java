@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
-import ru.atom.network.ConnectionPool;
+import ru.atom.network.Broker;
 
 public class EventHandler extends WebSocketAdapter {
     private static final Logger log = LogManager.getLogger(EventHandler.class);
@@ -19,12 +19,14 @@ public class EventHandler extends WebSocketAdapter {
     public void onWebSocketText(String message) {
         super.onWebSocketText(message);
         log.info("Received TEXT message: " + message);
+        Broker.getInstance().receive(super.getSession(), message);
     }
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
         super.onWebSocketClose(statusCode, reason);
         log.info("Socket Closed: [" + statusCode + "] " + reason);
+        // TODO: 4/30/17 надо удалять сессию из ConnectionPool?
     }
 
     @Override

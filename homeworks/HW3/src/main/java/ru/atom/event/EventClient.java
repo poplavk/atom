@@ -8,7 +8,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import ru.atom.message.Message;
 import ru.atom.message.Topic;
-import ru.atom.message.data.Direction;
+import ru.atom.model.Movable;
 
 import java.io.IOException;
 import java.net.URI;
@@ -58,8 +58,35 @@ public class EventClient {
             log.error("Ошибка при отправке сообщения {}", json);
         }
     }
-    public void sendMove(Direction direction) {
+    public void sendMove(Movable.Direction direction) {
+        Message message = new Message(Topic.MOVE, direction.toString());
+        ObjectMapper mapper = new ObjectMapper();
+        String json = "";
+        try {
+            json = mapper.writeValueAsString(message);
+            log.info(json);
+            session.getRemote().sendString(json);
+        } catch (JsonProcessingException e) {
+            log.error("Ошибка при преобразовании объекта Message в json", e);
+        } catch (IOException e) {
+            log.error("Ошибка при отправке сообщения {}", json);
+        }
 
+    }
+
+    public void sendPlantBomb() {
+        Message message = new Message(Topic.PLANT_BOMB, "");
+        ObjectMapper mapper = new ObjectMapper();
+        String json = "";
+        try {
+            json = mapper.writeValueAsString(message);
+            log.info(json);
+            session.getRemote().sendString(json);
+        } catch (JsonProcessingException e) {
+            log.error("Ошибка при преобразовании объекта Message в json", e);
+        } catch (IOException e) {
+            log.error("Ошибка при отправке сообщения {}", json);
+        }
     }
 
 //    public static void main(String[] args) {

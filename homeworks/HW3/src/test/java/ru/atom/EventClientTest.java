@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ru.atom.event.EventClient;
+import ru.atom.model.Movable.Direction;
 
 
 /**
@@ -21,6 +22,18 @@ public class EventClientTest {
     @Test
     public void testHello() {
         eventClient.sendHello("kolobok-killer");
+        Assert.assertTrue(true == true);
+    }
+
+    @Test
+    public void testMove() {
+        eventClient.sendMove(Direction.UP);
+        Assert.assertTrue(true == true);
+    }
+
+    @Test
+    public void testPlantBomb() {
+        eventClient.sendPlantBomb();
         Assert.assertTrue(true == true);
     }
 }
