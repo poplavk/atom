@@ -16,17 +16,17 @@ public class Girl extends AbstractGameObject implements Movable {
     private long passedTimeMillis;
 
 
-    public Girl(int x, int y) {
-        super(x, y);
+    public Girl(Point point) {
+        super(point, "Girl");
         bombCapacity = 1;
         rangeOfExplosion = 3;
         speed = 1;
-        logger.info("new Girl! id = {} x = {} y = {} speed = {}", getId(), x, y, speed);
+        logger.info("new Girl! id = {} x = {} y = {} speed = {}", getId(), point.getX(), point.getY(), speed);
 
     }
 
-    public Girl(int x, int y, int speed, int bombCapacity, int rangeOfExplosion) {
-        super(x, y);
+    public Girl(Point point, int speed, int bombCapacity, int rangeOfExplosion) {
+        super(point, "Girl");
         if (speed <= 0) {
             logger.error("Girls speed must be > 0!");
             throw new IllegalArgumentException();
@@ -34,8 +34,7 @@ public class Girl extends AbstractGameObject implements Movable {
         this.speed = speed;
         this.bombCapacity = bombCapacity;
         this.rangeOfExplosion = rangeOfExplosion;
-        logger.info("new Girl! id = {} x = {} y = {} speed = {}", getId(), x, y, speed);
-
+        logger.info("new Girl! id = {} x = {} y = {} speed = {}", getId(), point.getX(), point.getY(), speed);
     }
 
     @Override

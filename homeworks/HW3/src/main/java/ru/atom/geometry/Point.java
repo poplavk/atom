@@ -1,12 +1,15 @@
 package ru.atom.geometry;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Point implements Collider {
     private final int x;
     private final int y;
 
-    public Point(int x, int y) {
+    @JsonCreator
+    public Point(@JsonProperty("x") int x, @JsonProperty("y") int y) {
         this.x = x;
         this.y = y;
     }

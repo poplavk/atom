@@ -3,6 +3,7 @@ package ru.atom.model;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.geometry.Point;
 
 public class Bomb extends AbstractGameObject implements Temporary {
     private static final Logger logger = LogManager.getLogger(Bomb.class);
@@ -10,10 +11,10 @@ public class Bomb extends AbstractGameObject implements Temporary {
     private long lifeTimeMillis;
     private long passedTimeMillis;
 
-    public Bomb(int x, int y, long lifeTimeMillis) {
-        super(x, y);
+    public Bomb(Point point, long lifeTimeMillis) {
+        super(point, "Bomb");
         this.lifeTimeMillis = lifeTimeMillis;
-        logger.info("new Bomb! id = {} x = {} y = {}", getId(), x, y);
+        logger.info("new Bomb! id = {} x = {} y = {}", getId(), point.getX(), point.getY());
 
     }
 
