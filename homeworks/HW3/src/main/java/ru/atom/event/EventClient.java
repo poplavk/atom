@@ -92,7 +92,8 @@ public class EventClient {
 //    public static void main(String[] args) {
 //
 //        WebSocketClient client = new WebSocketClient();
-//        //client.setMasker(new ZeroMasker());
+//        final URI uri = URI.create("ws://localhost:8090/events/");
+//
 //        try {
 //            try {
 //                client.start();
@@ -103,6 +104,7 @@ public class EventClient {
 //                // Wait for Connect
 //                Session session = fut.get();
 //                // Send a message
+//
 //                session.getRemote().sendString("Hello");
 //                // Close session
 //                session.close();

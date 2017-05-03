@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
+import ru.atom.controller.GameController;
 import ru.atom.message.Message;
 import ru.atom.message.Topic;
 import ru.atom.model.GameSession;
@@ -16,6 +17,7 @@ public class Broker {
 
     private static final Broker instance = new Broker();
     private final ConnectionPool connectionPool;
+    private final GameController gameController;
 
     public static Broker getInstance() {
         return instance;
@@ -23,6 +25,7 @@ public class Broker {
 
     private Broker() {
         this.connectionPool = ConnectionPool.getInstance();
+        this.gameController = GameController.getInstance();
     }
 
     public void receive(@NotNull Session session, @NotNull String msg) {
@@ -33,18 +36,14 @@ public class Broker {
         // TODO: 4/30/17 вынести обработку в отдельный класс?
         Topic topic = message.getTopic();
         if (topic==Topic.HELLO) {
-            connectionPool.add(session, message.getData());
-            // TODO: 4/30/17 создать девочку
+            String player = message.getData();
+            connectionPool.add(session, player);
+            gameController.addPlayerAndStartGame(player);
             return;
         }
-        if (topic == Topic.MOVE) {
-            // TODO: 4/30/17 вытащить направление, по тику передвинуть девочку
-            return;
-        }
-        if (topic==Topic.PLANT_BOMB) {
-            // TODO: 4/30/17 на текущей координате девочки разместить бомбу
-            return;
-        }
+        String player = connectionPool.getPlayer(session);
+        gameController.onMsgHandler(player, message);
+
 
     }
 

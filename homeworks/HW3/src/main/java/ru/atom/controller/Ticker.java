@@ -2,6 +2,7 @@ package ru.atom.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.model.GameSession;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
@@ -11,6 +12,21 @@ public class Ticker {
     private static final int FPS = 60;
     private static final long FRAME_TIME = 1000 / FPS;
     private long tickNumber = 0;
+
+    public Ticker(GameSession gameSession) {
+        this.gameSession = gameSession;
+    }
+
+    private GameSession gameSession;
+
+    public void setGameSession(GameSession value) {
+        gameSession = value;
+    }
+
+    public GameSession getGameSession() {
+        return gameSession;
+    }
+
 
     public void loop() {
         while (!Thread.currentThread().isInterrupted()) {
@@ -30,6 +46,7 @@ public class Ticker {
 
     private void act(long time) {
         //Your logic here
+        gameSession.tick(time);
     }
 
     public long getTickNumber() {

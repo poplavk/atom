@@ -19,10 +19,19 @@ public class EventClientTest {
         eventClient.connect();
     }
 
+//    @Test
+//    public void testHello() {
+//        eventClient.sendHello("kolobok-killer");
+//        Assert.assertTrue(true == true);
+//    }
+
     @Test
-    public void testHello() {
+    public void testStartGame() {
+        eventClient.sendHello("1");
+        eventClient.sendHello("2");
+        eventClient.sendHello("3");
         eventClient.sendHello("kolobok-killer");
-        Assert.assertTrue(true == true);
+
     }
 
     @Test
