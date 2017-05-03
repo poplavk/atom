@@ -18,6 +18,11 @@ public class Bomb extends AbstractGameObject implements Temporary {
 
     }
 
+    public Bomb(Point point) {
+        this(point, 3);
+    }
+
+
     @Override
     public void tick(long elapsed) {
         passedTimeMillis += elapsed;

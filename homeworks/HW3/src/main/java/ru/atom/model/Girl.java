@@ -14,7 +14,7 @@ public class Girl extends AbstractGameObject implements Movable {
     private transient int bombCapacity;
     private transient int rangeOfExplosion;
     private transient long passedTimeMillis;
-
+    private transient boolean wasMovedOnTick = false;
 
     public Girl(Point point) {
         super(point, "Girl");
@@ -42,40 +42,55 @@ public class Girl extends AbstractGameObject implements Movable {
         passedTimeMillis += elapsed;
     }
 
+
+    public void setNewPosition(Point newPosition, String direction){
+        if (newPosition != null) {
+            moveLog(direction, getPosition().getX(), getPosition().getY(),
+                    newPosition.getX(), newPosition.getY());
+            setPosition(newPosition);
+        }
+    }
+
+
     @Override
     public Point move(Direction direction) {
-        Point newPosition;
+        // TODO maybe add queue for actions
+        if (wasMovedOnTick)
+            return getPosition();
+        wasMovedOnTick = true;
+
+        Point newPosition = null;
+        String directionString = "IDLE";
         switch (direction) {
             case UP:
                 newPosition = new Point(getPosition().getX(), getPosition().getY() + speed);
-                moveLog("UP", getPosition().getX(), getPosition().getY(),
-                        newPosition.getX(), newPosition.getY());
-                setPosition(newPosition);
-                return newPosition;
+                directionString = "UP";
+                break;
             case DOWN:
                 newPosition = new Point(getPosition().getX(), getPosition().getY() - speed);
-                moveLog("DOWN", getPosition().getX(), getPosition().getY(),
-                        newPosition.getX(), newPosition.getY());
-                setPosition(newPosition);
-                return newPosition;
+                directionString = "DOWN";
+                break;
             case RIGHT:
                 newPosition = new Point(getPosition().getX() + speed, getPosition().getY());
-                moveLog("RIGHT", getPosition().getX(), getPosition().getY(),
-                        newPosition.getX(), newPosition.getY());
-                setPosition(newPosition);
-                return newPosition;
+                directionString = "RIGHT";
+                break;
             case LEFT:
                 newPosition = new Point(getPosition().getX() - speed, getPosition().getY());
-                moveLog("LEFT", getPosition().getX(), getPosition().getY(),
-                        newPosition.getX(), newPosition.getY());
-                setPosition(newPosition);
-                return newPosition;
+                directionString = "LEFT";
+                break;
             case IDLE:
-                return getPosition();
             default:
-                return getPosition();
+                break;
         }
+        setNewPosition(newPosition, directionString);
+        return getPosition();
     }
+
+    public Bomb plantBomb() {
+        //TODO add work with bomb capacity
+        return new Bomb(getPosition());
+    }
+
 
     public void moveLog(String direction, int oldX, int oldY, int x, int y) {
         logger.info("Girl id = {} moved {}! ({}, {}) -> ({}, {})",

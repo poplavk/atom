@@ -4,10 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import ru.atom.geometry.Point;
+import ru.atom.message.DirectionMsg;
 import ru.atom.message.Message;
 import ru.atom.message.Topic;
 import ru.atom.model.*;
 import ru.atom.network.Broker;
+import ru.atom.util.JsonHelper;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -58,13 +60,21 @@ public class GameController {
     }
 
     public void onMsgHandler(String player, @NotNull Message msg) {
+        Girl girl = playerToGirl.get(player);
+        if (girl == null) {
+            log.warn("try to do something with null girl");
+            return;
+        }
         Topic topic = msg.getTopic();
+        String json = msg.getData();
+        log.info("msg: {}", json);
         if (topic == Topic.MOVE) {
-            // TODO: 4/30/17 вытащить направление, по тику передвинуть девочку
+            DirectionMsg directionMsg = JsonHelper.fromJson(json, DirectionMsg.class);
+            girl.move(directionMsg.getDirection());
             return;
         }
         if (topic==Topic.PLANT_BOMB) {
-            // TODO: 4/30/17 на текущей координате девочки разместить бомбу
+            girl.plantBomb();
             return;
         }
     }

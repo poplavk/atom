@@ -29,22 +29,19 @@ public class Broker {
     }
 
     public void receive(@NotNull Session session, @NotNull String msg) {
-        log.info("RECEIVED: " + msg);
+        log.info("RECEIVED by {}: {}", session.toString(), msg);
         Message message = JsonHelper.fromJson(msg, Message.class);
-        //TODO TASK2 implement message processing
-
-        // TODO: 4/30/17 вынести обработку в отдельный класс?
         Topic topic = message.getTopic();
+
         if (topic==Topic.HELLO) {
             String player = message.getData();
             connectionPool.add(session, player);
             gameController.addPlayerAndStartGame(player);
             return;
         }
+
         String player = connectionPool.getPlayer(session);
         gameController.onMsgHandler(player, message);
-
-
     }
 
     public void send(@NotNull String player, @NotNull Topic topic, @NotNull Object object) {
