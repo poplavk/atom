@@ -6,9 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.atom.geometry.Point;
 import ru.atom.message.Message;
 import ru.atom.message.Topic;
-import ru.atom.model.GameObject;
-import ru.atom.model.GameSession;
-import ru.atom.model.Girl;
+import ru.atom.model.*;
 import ru.atom.network.Broker;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +19,7 @@ public class GameController {
 
     private final ConcurrentHashMap<String, Girl> playerToGirl;
     private GameSession gameSession = new GameSession();
+    private Ticker ticker = null;
 
     //TODO maybe make it singleton?
     static public GameController getInstance() {
@@ -34,6 +33,11 @@ public class GameController {
 
     private void generateMap() {
         // TODO add map generator
+        gameSession.addGameObject(new Bomb(new Point(2, 2), 15));
+        gameSession.addGameObject(new Bomb(new Point(3, 3), 15));
+
+        gameSession.addGameObject(new Bonus(new Point(4, 4), Bonus.BonusType.FIRE));
+        gameSession.addGameObject(new Bonus(new Point(5, 5), Bonus.BonusType.SPEED));
     }
 
     public void addPlayerAndStartGame(String player) {
@@ -45,6 +49,9 @@ public class GameController {
             if (playerToGirl.putIfAbsent(player, girl) == null && playerToGirl.size() == 4) {
                 Broker.getInstance().broadcast(Topic.POSSESS, "");
                 log.info("Game started");
+                Broker.getInstance().broadcast(Topic.REPLICA, gameSession.getGameObjects());
+                ticker = new Ticker(gameSession);
+                ticker.loop();
             }
         }
 

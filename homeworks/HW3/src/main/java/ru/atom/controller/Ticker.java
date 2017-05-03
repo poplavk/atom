@@ -2,7 +2,9 @@ package ru.atom.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.message.Topic;
 import ru.atom.model.GameSession;
+import ru.atom.network.Broker;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
@@ -47,6 +49,7 @@ public class Ticker {
     private void act(long time) {
         //Your logic here
         gameSession.tick(time);
+        Broker.getInstance().broadcast(Topic.REPLICA, gameSession.getGameObjects());
     }
 
     public long getTickNumber() {

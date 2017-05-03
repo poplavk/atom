@@ -8,8 +8,8 @@ import ru.atom.geometry.Point;
 public class Bomb extends AbstractGameObject implements Temporary {
     private static final Logger logger = LogManager.getLogger(Bomb.class);
 
-    private long lifeTimeMillis;
-    private long passedTimeMillis;
+    private transient long lifeTimeMillis;
+    private transient long passedTimeMillis;
 
     public Bomb(Point point, long lifeTimeMillis) {
         super(point, "Bomb");

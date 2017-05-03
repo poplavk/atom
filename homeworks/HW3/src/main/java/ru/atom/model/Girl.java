@@ -10,10 +10,10 @@ public class Girl extends AbstractGameObject implements Movable {
 
     // TODO: 4/30/17 добавить имя игрока?
 
-    private int speed;
-    private int bombCapacity;
-    private int rangeOfExplosion;
-    private long passedTimeMillis;
+    private transient int  speed;
+    private transient int bombCapacity;
+    private transient int rangeOfExplosion;
+    private transient long passedTimeMillis;
 
 
     public Girl(Point point) {

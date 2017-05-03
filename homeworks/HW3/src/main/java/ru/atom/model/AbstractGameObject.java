@@ -12,7 +12,7 @@ public abstract class AbstractGameObject implements Positionable {
 
     private final int id;
     private Point position;
-    private final String className;
+    private final String type;
 
     @JsonCreator
     public AbstractGameObject(@JsonProperty("position") Point point, @JsonProperty("type") String clsName) {
@@ -23,7 +23,7 @@ public abstract class AbstractGameObject implements Positionable {
 
         this.id = GameSession.getNextId();
         this.position = point;
-        this.className = clsName;
+        this.type = clsName;
     }
 
     public int getId() {
@@ -42,7 +42,7 @@ public abstract class AbstractGameObject implements Positionable {
         position = newPosition;
     }
 
-    public String getClassName() {
-        return className;
+    public String getType() {
+        return type;
     }
 }
