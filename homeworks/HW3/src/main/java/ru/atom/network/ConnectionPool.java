@@ -57,10 +57,12 @@ public class ConnectionPool {
                 .orElseGet(null);
     }
 
-    public void add(Session session, String player) {
+    public boolean add(Session session, String player) {
         if (pool.putIfAbsent(session, player) == null) {
             log.info("{} joined", player);
+            return true;
         }
+        return false;
     }
 
     public void remove(Session session) {

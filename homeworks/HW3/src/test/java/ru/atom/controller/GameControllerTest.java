@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.atom.event.EventClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -11,19 +14,29 @@ import static org.junit.Assert.*;
  */
 public class GameControllerTest {
     private EventClient eventClient = new EventClient();
+    private List<EventClient> eventClients = new ArrayList<>();
+    private boolean firstRun = true;
 
     @Before
     public void start() {
-        eventClient.connect();
+        if (firstRun) {
+            eventClient.connect();
+            int i = 0;
+            while (i < 4) {
+                i++;
+                EventClient client = new EventClient();
+                client.connect();
+                eventClients.add(client);
+            }
+            firstRun = false;
+        }
     }
 
     @Test
     public void addPlayerAndStartGame() throws Exception {
-        eventClient.sendHello("1");
-        eventClient.sendHello("2");
-        eventClient.sendHello("3");
-        eventClient.sendHello("kolobok-killer");
-
+        for (int i=0; i < 4; i++ ) {
+            eventClients.get(i).sendHello(String.valueOf(i));
+        }
     }
 
     @Test

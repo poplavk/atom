@@ -28,6 +28,10 @@ public class Broker {
         this.gameController = GameController.getInstance();
     }
 
+    public void removeSession(@NotNull Session session) {
+        connectionPool.remove(session);
+    }
+
     public void receive(@NotNull Session session, @NotNull String msg) {
         log.info("RECEIVED by {}: {}", session.toString(), msg);
         Message message = JsonHelper.fromJson(msg, Message.class);
@@ -35,8 +39,9 @@ public class Broker {
 
         if (topic==Topic.HELLO) {
             String player = message.getData();
-            connectionPool.add(session, player);
-            gameController.addPlayerAndStartGame(player);
+            if (connectionPool.add(session, player)) {
+                gameController.addPlayerAndStartGame(player);
+            }
             return;
         }
 

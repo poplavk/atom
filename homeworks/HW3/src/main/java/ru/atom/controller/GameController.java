@@ -59,7 +59,7 @@ public class GameController {
 
     }
 
-    public void onMsgHandler(String player, @NotNull Message msg) {
+    public void onMsgHandler(@NotNull String player, @NotNull Message msg) {
         Girl girl = playerToGirl.get(player);
         if (girl == null) {
             log.warn("try to do something with null girl");

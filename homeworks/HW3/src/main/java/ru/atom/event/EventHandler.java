@@ -24,9 +24,10 @@ public class EventHandler extends WebSocketAdapter {
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
+        Session oldSession = super.getSession();
         super.onWebSocketClose(statusCode, reason);
         log.info("Socket Closed: [" + statusCode + "] " + reason);
-        // TODO: 4/30/17 надо удалять сессию из ConnectionPool?
+        Broker.getInstance().removeSession(oldSession);
     }
 
     @Override
