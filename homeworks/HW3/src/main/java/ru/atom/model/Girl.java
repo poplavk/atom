@@ -70,9 +70,9 @@ public class Girl extends AbstractGameObject implements Movable {
         return getPosition();
     }
 
-    public void plantBomb() {
-        new Bomb(getPosition(), this, rangeOfExplosion);
+    public Bomb plantBomb() {
         bombCapacity--;
+        return new Bomb(getPosition(), this, rangeOfExplosion);
     }
 
     public void increaseBombCapacity() {
