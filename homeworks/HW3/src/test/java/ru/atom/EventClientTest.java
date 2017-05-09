@@ -17,13 +17,11 @@ public class EventClientTest {
     @Before
     public void start() {
         eventClient.connect();
+        eventClient.sendHello("kolobok-killer");
+
     }
 
-    @Test
-    public void testHello() {
-        eventClient.sendHello("kolobok-killer");
-        Assert.assertTrue(true == true);
-    }
+
 
     @Test
     public void testMove() {
