@@ -11,6 +11,7 @@ public class GameSession implements Tickable {
     private List<GameObject> gameObjects = new ArrayList<>();
     private static int lastId = 0;
 
+
     public static int getNextId() {
         return lastId++;
     }
@@ -19,12 +20,13 @@ public class GameSession implements Tickable {
         return new ArrayList<>(gameObjects);
     }
 
-    public void addGameObject(GameObject gameObject) {
+    public synchronized void addGameObject(GameObject gameObject) {
         gameObjects.add(gameObject);
+        log.info("add new game object {}", gameObject.getClass().toString());
     }
 
     @Override
-    public void tick(long elapsed) {
+    public synchronized void tick(long elapsed) {
         log.info("tick");
         ArrayList<Temporary> dead = new ArrayList<>();
         for (GameObject gameObject : gameObjects) {

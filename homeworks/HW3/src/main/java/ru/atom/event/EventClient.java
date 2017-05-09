@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import ru.atom.message.DirectionMsg;
 import ru.atom.message.Message;
 import ru.atom.message.Topic;
 import ru.atom.model.Movable;
@@ -59,7 +60,7 @@ public class EventClient {
         }
     }
     public void sendMove(Movable.Direction direction) {
-        Message message = new Message(Topic.MOVE, direction.toString());
+        Message message = new Message(Topic.MOVE, new DirectionMsg(direction));
         ObjectMapper mapper = new ObjectMapper();
         String json = "";
         try {

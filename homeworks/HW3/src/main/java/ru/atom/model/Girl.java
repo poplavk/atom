@@ -53,7 +53,7 @@ public class Girl extends AbstractGameObject implements Movable {
 
 
     @Override
-    public Point move(Direction direction) {
+    public synchronized Point move(Direction direction) {
         // TODO maybe add queue for actions
         if (wasMovedOnTick)
             return getPosition();

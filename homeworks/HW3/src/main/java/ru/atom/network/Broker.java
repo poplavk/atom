@@ -33,7 +33,7 @@ public class Broker {
     }
 
     public void receive(@NotNull Session session, @NotNull String msg) {
-        log.info("RECEIVED by {}: {}", session.toString(), msg);
+        log.info("RECEIVED: {}", msg);
         Message message = JsonHelper.fromJson(msg, Message.class);
         Topic topic = message.getTopic();
 

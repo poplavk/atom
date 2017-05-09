@@ -22,6 +22,7 @@ public class GameController {
     private final ConcurrentHashMap<String, Girl> playerToGirl;
     private GameSession gameSession = new GameSession();
     private Ticker ticker = null;
+    private static Object lock = new Object();
 
     //TODO maybe make it singleton?
     static public GameController getInstance() {
@@ -67,14 +68,15 @@ public class GameController {
         }
         Topic topic = msg.getTopic();
         String json = msg.getData();
-        log.info("msg: {}", json);
+        log.info("msg.data: {}", json);
         if (topic == Topic.MOVE) {
             DirectionMsg directionMsg = JsonHelper.fromJson(json, DirectionMsg.class);
             girl.move(directionMsg.getDirection());
             return;
         }
         if (topic==Topic.PLANT_BOMB) {
-            girl.plantBomb();
+            gameSession.addGameObject(girl.plantBomb());
+
             return;
         }
     }
