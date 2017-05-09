@@ -10,30 +10,14 @@ public class Girl extends AbstractGameObject implements Movable {
 
     // TODO: 4/30/17 добавить имя игрока?
 
-    private transient int  speed;
-    private transient int bombCapacity;
-    private transient int rangeOfExplosion;
+    private transient int  speed = 1;
+    private transient int bombCapacity = 1;
+    private transient int rangeOfExplosion = 3;
     private transient long passedTimeMillis;
     private transient boolean wasMovedOnTick = false;
 
     public Girl(Point point) {
         super(point, "Girl");
-        bombCapacity = 1;
-        rangeOfExplosion = 3;
-        speed = 1;
-        logger.info("new Girl! id = {} x = {} y = {} speed = {}", getId(), point.getX(), point.getY(), speed);
-
-    }
-
-    public Girl(Point point, int speed, int bombCapacity, int rangeOfExplosion) {
-        super(point, "Girl");
-        if (speed <= 0) {
-            logger.error("Girls speed must be > 0!");
-            throw new IllegalArgumentException();
-        }
-        this.speed = speed;
-        this.bombCapacity = bombCapacity;
-        this.rangeOfExplosion = rangeOfExplosion;
         logger.info("new Girl! id = {} x = {} y = {} speed = {}", getId(), point.getX(), point.getY(), speed);
     }
 
@@ -86,11 +70,14 @@ public class Girl extends AbstractGameObject implements Movable {
         return getPosition();
     }
 
-    public Bomb plantBomb() {
-        //TODO add work with bomb capacity
-        return new Bomb(getPosition());
+    public void plantBomb() {
+        new Bomb(getPosition(), this, rangeOfExplosion);
+        bombCapacity--;
     }
 
+    public void increaseBombCapacity() {
+        bombCapacity++;
+    }
 
     public void moveLog(String direction, int oldX, int oldY, int x, int y) {
         logger.info("Girl id = {} moved {}! ({}, {}) -> ({}, {})",
