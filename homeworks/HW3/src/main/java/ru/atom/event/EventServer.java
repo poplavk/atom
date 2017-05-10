@@ -1,8 +1,10 @@
 package ru.atom.event;
 
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -20,9 +22,13 @@ public class EventServer {
         // Setup the basic application "context" for this application at "/"
         // This is also known as the handler tree (in jetty speak)
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        ContextHandlerCollection contexts = new ContextHandlerCollection();
         context.setContextPath("/");
-        server.setHandler(createResourceContext());
-        server.setHandler(context);
+        contexts.setHandlers(new Handler[]{
+                createResourceContext(),
+                context
+        });
+        server.setHandler(contexts);
 
         // Add a websocket to a specific path spec
         ServletHolder holderEvents = new ServletHolder("ws-events", EventServlet.class);
