@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ru.atom.dbhackaton.server.base.Match;
 import ru.atom.dbhackaton.server.mm.Connection;
 import ru.atom.dbhackaton.server.service.MatchMakerService;
+import ru.atom.message.Message;
 import ru.atom.message.Topic;
 import ru.atom.model.GameObject;
 import ru.atom.model.GameSession;
@@ -23,7 +24,7 @@ public class Ticker implements Runnable {
     private static final long FRAME_TIME = 1000 / FPS;
     private long tickNumber = 0;
 
-    public static final int PLAYERS_IN_GAME = 4;
+    public static final int PLAYERS_IN_GAME = 1;
     private final Connection[] connections;
     private final Integer id;
 
@@ -97,7 +98,7 @@ public class Ticker implements Runnable {
 
     @Override
     public void run() {
-//        Broker.getInstance().send();
+        Broker.getInstance().send("player", Topic.POSSESS, 2);
         while (!Thread.currentThread().isInterrupted()) {
             tick(); //todo handle game over
         }

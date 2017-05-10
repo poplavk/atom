@@ -20,7 +20,7 @@ public class Girl extends AbstractGameObject implements Movable {
     private transient Bomb bombForPlant = null;
 
     public Girl(Point point) {
-        super(point, "Girl");
+        super(point, "Pawn");
         logger.info("new Girl! id = {} x = {} y = {} speed = {}", getId(), point.getX(), point.getY(), speed);
     }
 

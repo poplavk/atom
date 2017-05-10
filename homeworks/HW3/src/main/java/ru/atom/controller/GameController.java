@@ -37,7 +37,7 @@ public class GameController {
 
     private boolean addPlayerToTicker(String player, Ticker ticker) {
         if (ticker.addPlayers(player)) {
-            Girl girl = new Girl(new Point(0,0)); //TODO remake it
+            Girl girl = new Girl(new Point(1,1)); //TODO remake it
             if (playerToGirl.putIfAbsent(player, girl) == null) {
                 ticker.addGameObject(girl);
 
@@ -64,6 +64,12 @@ public class GameController {
             Ticker ticker = new Ticker();
             if (addPlayerToTicker(player, ticker)) {
                 tickers.add(ticker);
+                if (ticker.canStartGame()) {
+
+                    Thread thread = new Thread(ticker);
+                    thread.start();
+                    log.info("Game started");
+                }
             }
         }
     }

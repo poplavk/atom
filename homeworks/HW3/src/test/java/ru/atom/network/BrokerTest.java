@@ -14,6 +14,7 @@ public class BrokerTest {
     private EventClient eventClient = new EventClient();
     private List<EventClient> eventClients = new ArrayList<>();
     private boolean firstRun = true;
+    private final int COUNT = 4;
 
     @Before
     public void start() {
@@ -21,7 +22,7 @@ public class BrokerTest {
 
 //            eventClient.connect();
             int i = 0;
-            while (i < 4) {
+            while (i < COUNT) {
                 i++;
                 EventClient client = new EventClient();
                 client.connect();
@@ -58,7 +59,7 @@ public class BrokerTest {
 
     @Test
     public void onMsgHandlerPlantBomb() throws Exception {
-        for (int j=0; j < 4; j++ ) {
+        for (int j=0; j < COUNT; j++ ) {
             eventClients.get(j).sendPlantBomb();
         }
     }
