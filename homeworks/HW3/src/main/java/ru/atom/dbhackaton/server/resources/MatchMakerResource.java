@@ -23,7 +23,7 @@ public class MatchMakerResource {
     public static MatchMakerService matchMakerService = new MatchMakerService();
 
 
-    @GET
+    @POST
     @Consumes("application/x-www-form-urlencoded")
     @Path("/join")
     @Produces("text/plain")
