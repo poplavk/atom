@@ -36,9 +36,6 @@ public class GameController {
 
     private void generateMap() {
         // TODO add map generator
-        gameSession.addGameObject(new Bomb(new Point(2, 2), 15));
-        gameSession.addGameObject(new Bomb(new Point(3, 3), 15));
-
         gameSession.addGameObject(new Bonus(new Point(4, 4), Bonus.BonusType.FIRE));
         gameSession.addGameObject(new Bonus(new Point(5, 5), Bonus.BonusType.SPEED));
     }

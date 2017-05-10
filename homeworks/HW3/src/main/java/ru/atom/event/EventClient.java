@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 public class EventClient {
     private static final Logger log = LogManager.getLogger(EventClient.class);
 
-    private final URI uri = URI.create("ws://localhost:8090/events/");
+    private final URI uri = URI.create("ws://localhost:8089/events/");
 
     private Session session;
 

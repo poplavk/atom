@@ -21,8 +21,8 @@ public class EventServer {
         // This is also known as the handler tree (in jetty speak)
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
-        server.setHandler(context);
         server.setHandler(createResourceContext());
+        server.setHandler(context);
 
         // Add a websocket to a specific path spec
         ServletHolder holderEvents = new ServletHolder("ws-events", EventServlet.class);

@@ -34,9 +34,9 @@ public class GameSession implements Tickable, Runnable {
         log.info("add new game object {}", gameObject.getClass().toString());
     }
 
-    public GameSession(Connection[] connections) {
+    public GameSession() {
         this.id = MatchMakerService.saveMatch(new Match());
-        this.connections = connections;
+        this.connections = new Connection[PLAYERS_IN_GAME];
         sendIdToConnections();
     }
 
@@ -46,7 +46,7 @@ public class GameSession implements Tickable, Runnable {
 
     public void sendIdToConnections(){
         for (Connection connection: connections) {
-            connection.setSessionId(id);
+//            connection.setSessionId(id);
         }
     }
 
