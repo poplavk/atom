@@ -42,7 +42,6 @@ public class GameControllerTest {
         for (int i=0; i < 4; i++ ) {
             eventClients.get(i).sendHello(String.valueOf(i));
         }
-
     }
 
     @Test

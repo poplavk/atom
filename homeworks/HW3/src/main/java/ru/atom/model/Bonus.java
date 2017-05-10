@@ -14,11 +14,11 @@ public class Bonus extends AbstractGameObject implements Positionable {
         FIRE
     }
 
-    private BonusType type;
+    private transient BonusType bonusType;
 
     public Bonus(Point point, BonusType type) {
         super(point, "Bonus");
-        this.type = type;
+        this.bonusType = type;
         logger.info("new Bonus! id = {} x = {} y = {} type {}", getId(), point.getX(), point.getY(), type);
     }
 

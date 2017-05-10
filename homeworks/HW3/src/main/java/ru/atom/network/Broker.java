@@ -46,7 +46,9 @@ public class Broker {
         }
 
         String player = connectionPool.getPlayer(session);
-        gameController.onMsgHandler(player, message);
+        if (player != null) {
+            gameController.onMsgHandler(player, message);
+        }
     }
 
     public void send(@NotNull String player, @NotNull Topic topic, @NotNull Object object) {

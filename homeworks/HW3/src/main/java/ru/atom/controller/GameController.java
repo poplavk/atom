@@ -72,8 +72,10 @@ public class GameController {
             return;
         }
         if (topic==Topic.PLANT_BOMB) {
-            gameSession.addGameObject(girl.plantBomb());
-
+            Bomb bomb = girl.plantBomb();
+            if (bomb != null) {
+                gameSession.addGameObject(bomb);
+            }
             return;
         }
     }

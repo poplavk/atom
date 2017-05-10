@@ -14,7 +14,10 @@ public class Girl extends AbstractGameObject implements Movable {
     private transient int bombCapacity = 1;
     private transient int rangeOfExplosion = 3;
     private transient long passedTimeMillis;
-    private transient boolean wasMovedOnTick = false;
+
+    //TODO  переделать это на зависимость от времени
+    private transient boolean wasActedOnTick = false;
+
 
     public Girl(Point point) {
         super(point, "Girl");
@@ -27,7 +30,7 @@ public class Girl extends AbstractGameObject implements Movable {
     }
 
 
-    public void setNewPosition(Point newPosition, String direction){
+    private void setNewPosition(Point newPosition, String direction){
         if (newPosition != null) {
             moveLog(direction, getPosition().getX(), getPosition().getY(),
                     newPosition.getX(), newPosition.getY());
@@ -39,9 +42,9 @@ public class Girl extends AbstractGameObject implements Movable {
     @Override
     public synchronized Point move(Direction direction) {
         // TODO maybe add queue for actions
-        if (wasMovedOnTick)
+        if (wasActedOnTick)
             return getPosition();
-        wasMovedOnTick = true;
+        wasActedOnTick = true;
 
         Point newPosition = null;
         String directionString = "IDLE";
@@ -70,16 +73,20 @@ public class Girl extends AbstractGameObject implements Movable {
         return getPosition();
     }
 
-    public Bomb plantBomb() {
+    public synchronized Bomb plantBomb() {
+        if (wasActedOnTick || bombCapacity <= 0) {
+            return null;
+        }
+        wasActedOnTick = true;
         bombCapacity--;
         return new Bomb(getPosition(), this, rangeOfExplosion);
     }
 
-    public void increaseBombCapacity() {
+    public synchronized void increaseBombCapacity() {
         bombCapacity++;
     }
 
-    public void moveLog(String direction, int oldX, int oldY, int x, int y) {
+    private void moveLog(String direction, int oldX, int oldY, int x, int y) {
         logger.info("Girl id = {} moved {}! ({}, {}) -> ({}, {})",
                 getId(), direction, oldX, oldY, x, y);
     }

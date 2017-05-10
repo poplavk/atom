@@ -62,15 +62,20 @@ public class GameSession implements Tickable, Runnable {
     public synchronized void tick(long elapsed) {
         log.info("tick");
         ArrayList<Temporary> dead = new ArrayList<>();
+        ArrayList<GameObject> newObjects = new ArrayList<>();
         for (GameObject gameObject : gameObjects) {
             if (gameObject instanceof Tickable) {
                 ((Tickable) gameObject).tick(elapsed);
             }
             if (gameObject instanceof Temporary && ((Temporary) gameObject).isDead()) {
                 dead.add((Temporary) gameObject);
+                if (gameObject instanceof Bomb) {
+                    newObjects.addAll( ((Bomb) gameObject).getBlast());
+                }
             }
         }
         gameObjects.removeAll(dead);
+        gameObjects.addAll(newObjects);
     }
 
     @Override

@@ -16,11 +16,6 @@ public abstract class AbstractGameObject implements Positionable {
 
     @JsonCreator
     public AbstractGameObject(@JsonProperty("position") Point point, @JsonProperty("type") String clsName) {
-        if ( point.getX() < 0 || point.getY() < 0) {
-            logger.error("GameObjects x, y must be >= 0!");
-            throw new IllegalArgumentException();
-        }
-
         this.id = GameSession.getNextId();
         this.position = point;
         this.type = clsName;

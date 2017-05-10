@@ -5,9 +5,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.atom.geometry.Point;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bomb extends AbstractGameObject implements Temporary {
     private static final Logger logger = LogManager.getLogger(Bomb.class);
-    private final transient int LIFE_TIME = 2000;
+    private final transient int LIFE_TIME = 20;
 
     private transient int range;
     private transient long passedTimeMillis;
@@ -37,8 +40,26 @@ public class Bomb extends AbstractGameObject implements Temporary {
         if(isDead) {
             logger.info("BOOM! (BombId = {})", getId());
             owner.increaseBombCapacity();
-            new Fire(this.getPosition(), range);
+            //TODO думаю здесь не лучшая идея создавать огонь, как минимум потому что он не добавляется на карту
+//            new Fire(this.getPosition(), range);
         }
         return isDead;
+    }
+
+    public List<Fire> getBlast() {
+        List<Fire> blast = new ArrayList<>();
+        Point blastFocus = getPosition();
+        int xBlastFocus = blastFocus.getX();
+        int yBlastFocus = blastFocus.getY();
+
+        blast.add(new Fire(blastFocus));
+        for (int i = 1; i < range + 1; i++) {
+            blast.add(new Fire(new Point(xBlastFocus, yBlastFocus + i)));
+            blast.add(new Fire(new Point(xBlastFocus, yBlastFocus - i)));
+            blast.add(new Fire(new Point(xBlastFocus + i, yBlastFocus)));
+            blast.add(new Fire(new Point(xBlastFocus - i, yBlastFocus)));
+        }
+
+        return blast;
     }
 }
