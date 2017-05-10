@@ -84,6 +84,9 @@ Menu = Class.extend({
         this.setHandCursor(singleBg);
         singleBg.addEventListener('click', function() {
             that.setMode('single');
+            setTimeout(function () {
+                    gGameEngine.serverProxy.socket.send(gMessages.hello('player'));
+            }, 5000)
         });
 
         var singleTitle = new createjs.Text("Play", "16px Helvetica", "#ff4444");

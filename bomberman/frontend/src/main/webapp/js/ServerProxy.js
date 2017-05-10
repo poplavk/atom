@@ -1,10 +1,14 @@
 ServerProxy = Class.extend({
 
-    host: "localhost:8090",
+    host: "localhost:8089",
 
     socket: null,
 
     handler: {},
+
+    getInstance: function() {
+        return this;
+    },
 
     init: function() {
         this.handler['REPLICA'] = gMessages.handleReplica;
@@ -59,5 +63,4 @@ ServerProxy = Class.extend({
             console.log("Error " + error.message);
         };
     }
-
 });

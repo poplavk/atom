@@ -25,6 +25,15 @@ Messages = Class.extend({
         return JSON.stringify(template);
     },
 
+    hello: function (name) {
+        var template = {
+            topic: "HELLO",
+            data: {}
+        };
+
+        template.data = name;
+        return JSON.stringify(template);
+    },
 
     handleReplica: function (msg) {
         var gameObjects = JSON.parse(msg.data).objects;
