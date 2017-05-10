@@ -31,11 +31,29 @@ public class Message {
     @JsonCreator
     public Message(@JsonProperty("topic") Topic topic, @JsonProperty("data") JsonNode data) {
         this.topic = topic;
-        this.data = data.toString();
+        this.data = data.asText();
     }
 
     public Topic getTopic() {
         return topic;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        if (topic != message.topic) return false;
+        return data != null ? data.equals(message.data) : message.data == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = topic != null ? topic.hashCode() : 0;
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        return result;
     }
 
     public String getData() {
