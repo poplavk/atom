@@ -17,7 +17,7 @@ public class Girl extends AbstractGameObject implements Movable {
 
     //TODO  переделать это на зависимость от времени
     private transient boolean wasActedOnTick = false;
-
+    private transient Bomb bombForPlant = null;
 
     public Girl(Point point) {
         super(point, "Girl");
@@ -26,6 +26,8 @@ public class Girl extends AbstractGameObject implements Movable {
 
     @Override
     public void tick(long elapsed) {
+        wasActedOnTick = false;
+        bombForPlant = null;
         passedTimeMillis += elapsed;
     }
 
@@ -73,13 +75,13 @@ public class Girl extends AbstractGameObject implements Movable {
         return getPosition();
     }
 
-    public synchronized Bomb plantBomb() {
+    public synchronized void plantBomb() {
         if (wasActedOnTick || bombCapacity <= 0) {
-            return null;
+            return;
         }
         wasActedOnTick = true;
         bombCapacity--;
-        return new Bomb(getPosition(), this, rangeOfExplosion);
+        bombForPlant = new Bomb(getPosition(), this, rangeOfExplosion);
     }
 
     public synchronized void increaseBombCapacity() {
@@ -89,5 +91,9 @@ public class Girl extends AbstractGameObject implements Movable {
     private void moveLog(String direction, int oldX, int oldY, int x, int y) {
         logger.info("Girl id = {} moved {}! ({}, {}) -> ({}, {})",
                 getId(), direction, oldX, oldY, x, y);
+    }
+
+    public Bomb getBombForPlant() {
+        return bombForPlant;
     }
 }

@@ -50,7 +50,14 @@ public class GameSession implements Tickable {
         log.info("tick");
         ArrayList<Temporary> dead = new ArrayList<>();
         ArrayList<GameObject> newObjects = new ArrayList<>();
+
         for (GameObject gameObject : gameObjects) {
+            if (gameObject instanceof Girl) {
+                Bomb bomb = ((Girl) gameObject).getBombForPlant();
+                if ( bomb != null) {
+                    newObjects.add(bomb);
+                }
+            }
             if (gameObject instanceof Tickable) {
                 ((Tickable) gameObject).tick(elapsed);
             }
@@ -61,6 +68,7 @@ public class GameSession implements Tickable {
                 }
             }
         }
+
         gameObjects.removeAll(dead);
         gameObjects.addAll(newObjects);
     }

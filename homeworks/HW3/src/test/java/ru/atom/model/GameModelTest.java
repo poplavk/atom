@@ -37,21 +37,37 @@ public class GameModelTest {
                 Point firstPosition = ((Movable) gameObject).getPosition();
                 Point currentPosition = ((Movable) gameObject).move(Movable.Direction.UP);
                 Assert.assertTrue(currentPosition.getY() > firstPosition.getY());
-
-                currentPosition = ((Movable) gameObject).move(Movable.Direction.DOWN);
-                Assert.assertTrue(currentPosition.getY() == firstPosition.getY());
-
-                currentPosition = ((Movable) gameObject).move(Movable.Direction.RIGHT);
-                Assert.assertTrue(currentPosition.getX() > firstPosition.getX());
-
-                currentPosition = ((Movable) gameObject).move(Movable.Direction.LEFT);
-                Assert.assertTrue(currentPosition.getX() == firstPosition.getX());
-
-                currentPosition = ((Movable) gameObject).move(Movable.Direction.IDLE);
-                Assert.assertTrue(currentPosition.getX() == firstPosition.getX());
-                Assert.assertTrue(currentPosition.getY() == firstPosition.getY());
             }
         }
+        gameSession.tick(10);
+        for (GameObject gameObject : gameObjects) {
+            if (gameObject instanceof Movable) {
+                Point firstPosition = ((Movable) gameObject).getPosition();
+                Point currentPosition = ((Movable) gameObject).move(Movable.Direction.DOWN);
+                Assert.assertTrue(currentPosition.getY() < firstPosition.getY());
+            }
+        }
+
+        gameSession.tick(10);
+        for (GameObject gameObject : gameObjects) {
+            if (gameObject instanceof Movable) {
+                Point firstPosition = ((Movable) gameObject).getPosition();
+                Point currentPosition = ((Movable) gameObject).move(Movable.Direction.RIGHT);
+                Assert.assertTrue(currentPosition.getX() > firstPosition.getX());
+            }
+        }
+
+        gameSession.tick(10);
+        for (GameObject gameObject : gameObjects) {
+            if (gameObject instanceof Movable) {
+                Point firstPosition = ((Movable) gameObject).getPosition();
+                ((Movable) gameObject).move(Movable.Direction.LEFT);
+                ((Movable) gameObject).move(Movable.Direction.RIGHT);
+                Point currentPosition = ((Movable) gameObject).move(Movable.Direction.RIGHT);
+                Assert.assertTrue(currentPosition.getX() < firstPosition.getX());
+            }
+        }
+
     }
 
     /**

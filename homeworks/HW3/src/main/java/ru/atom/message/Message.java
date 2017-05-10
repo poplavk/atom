@@ -13,19 +13,20 @@ public class Message {
 
     public Message(Topic topic, Object data) {
         this.topic = topic;
-        if (topic == Topic.HELLO) {
-            this.data = data.toString();
-            return;
+        switch (topic) {
+            case MOVE:
+                this.data = JsonHelper.toJson(data);
+                break;
+            case HELLO:
+            case POSSESS:
+                this.data = data.toString();
+                break;
+            case PLANT_BOMB:
+                this.data = "";
+                break;
+            default:
+                this.data = data.toString();
         }
-        if (topic == Topic.MOVE) {
-            this.data = JsonHelper.toJson(data);
-            return;
-        }
-        if (topic == Topic.PLANT_BOMB) {
-            this.data = "";
-            return;
-        }
-        this.data = data.toString();
     }
 
     @JsonCreator

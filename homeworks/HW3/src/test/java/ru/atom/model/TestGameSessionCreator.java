@@ -20,6 +20,8 @@ public final class TestGameSessionCreator {
         gameSession.addGameObject(new Bonus(new Point(4, 4), Bonus.BonusType.FIRE));
         gameSession.addGameObject(new Bonus(new Point(5, 5), Bonus.BonusType.SPEED));
 
+        gameSession.addGameObject(new Fire(new Point(8,8)));
+
         return gameSession;
     }
 }

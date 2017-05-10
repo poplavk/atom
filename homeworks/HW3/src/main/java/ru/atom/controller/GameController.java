@@ -24,9 +24,7 @@ public class GameController {
     private final ConcurrentHashMap<String, Girl> playerToGirl = new ConcurrentHashMap<>();
     private final List<Ticker> tickers = new CopyOnWriteArrayList<>();
 
-    private GameSession gameSession = new GameSession();
-    private Ticker ticker = null;
-    private static Object lock = new Object();
+    private static final Object lock = new Object();
 
     //TODO maybe make it singleton?
     static public GameController getInstance() {
@@ -55,6 +53,7 @@ public class GameController {
             for (Ticker ticker : tickers) {
                 if (addPlayerToTicker(player, ticker)) {
                     if (ticker.canStartGame()) {
+
                         Thread thread = new Thread(ticker);
                         thread.start();
                         log.info("Game started");
@@ -84,12 +83,13 @@ public class GameController {
             return;
         }
         if (topic==Topic.PLANT_BOMB) {
-            Bomb bomb = girl.plantBomb();
-            if (bomb != null) {
-                gameSession.addGameObject(bomb);
-            }
+            girl.plantBomb();
             return;
         }
+    }
+
+    public List<Ticker> getTickers() {
+        return tickers;
     }
 
 }
