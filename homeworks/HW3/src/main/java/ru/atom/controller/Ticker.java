@@ -2,35 +2,82 @@ package ru.atom.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.dbhackaton.server.base.Match;
+import ru.atom.dbhackaton.server.mm.Connection;
+import ru.atom.dbhackaton.server.service.MatchMakerService;
 import ru.atom.message.Topic;
+import ru.atom.model.GameObject;
 import ru.atom.model.GameSession;
 import ru.atom.network.Broker;
 
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
-public class Ticker {
+public class Ticker implements Runnable {
     private static final Logger log = LogManager.getLogger(Ticker.class);
     private static final int FPS = 60;
     private static final long FRAME_TIME = 1000 / FPS;
     private long tickNumber = 0;
 
-    public Ticker(GameSession gameSession) {
-        this.gameSession = gameSession;
+    public static final int PLAYERS_IN_GAME = 4;
+    private final Connection[] connections;
+    private final Integer id;
+
+    private final Set<String> players = new CopyOnWriteArraySet<>();
+    private final GameSession gameSession = new GameSession();
+
+
+    public Ticker() {
+        this.id = MatchMakerService.saveMatch(new Match());
+        this.connections = new Connection[PLAYERS_IN_GAME];
+        sendIdToConnections();
     }
 
-    private GameSession gameSession;
+    public long getId() {
+        return id;
+    }
 
-    public void setGameSession(GameSession value) {
-        gameSession = value;
+    public void sendIdToConnections(){
+        for (Connection connection: connections) {
+//            connection.setSessionId(id);
+        }
+    }
+
+    public boolean addPlayers(String player) {
+        if (players.size() < PLAYERS_IN_GAME) {
+            return players.add(player);
+        }
+        return false;
+    }
+
+    public boolean canStartGame() {
+        return players.size() == PLAYERS_IN_GAME;
+    }
+
+    public void addGameObject(GameObject gameObject) {
+        gameSession.addGameObject(gameObject);
     }
 
     public GameSession getGameSession() {
         return gameSession;
     }
 
+    private void act(long time) {
+        //Your logic here
+        gameSession.tick(time);
+        Broker.getInstance().broadcast(Topic.REPLICA, gameSession.getGameObjects());
+    }
 
-    public void loop() {
+    public long getTickNumber() {
+        return tickNumber;
+    }
+
+    @Override
+    public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             long started = System.currentTimeMillis();
             act(FRAME_TIME);
@@ -44,15 +91,5 @@ public class Ticker {
             log.info("{}: tick ", tickNumber);
             tickNumber++;
         }
-    }
-
-    private void act(long time) {
-        //Your logic here
-        gameSession.tick(time);
-        Broker.getInstance().broadcast(Topic.REPLICA, gameSession.getGameObjects());
-    }
-
-    public long getTickNumber() {
-        return tickNumber;
     }
 }

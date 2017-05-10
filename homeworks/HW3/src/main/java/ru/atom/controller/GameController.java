@@ -11,7 +11,9 @@ import ru.atom.model.*;
 import ru.atom.network.Broker;
 import ru.atom.util.JsonHelper;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by dmbragin on 5/3/17.
@@ -19,7 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameController {
     private static final Logger log = LogManager.getLogger(GameController.class);
 
-    private final ConcurrentHashMap<String, Girl> playerToGirl;
+    private final ConcurrentHashMap<String, Girl> playerToGirl = new ConcurrentHashMap<>();
+    private final List<Ticker> tickers = new CopyOnWriteArrayList<>();
+
     private GameSession gameSession = new GameSession();
     private Ticker ticker = null;
     private static Object lock = new Object();
@@ -30,31 +34,39 @@ public class GameController {
     }
 
     public GameController() {
-        this.playerToGirl = new ConcurrentHashMap<>();
-        generateMap();
+
     }
 
-    private void generateMap() {
-        // TODO add map generator
-        gameSession.addGameObject(new Bonus(new Point(4, 4), Bonus.BonusType.FIRE));
-        gameSession.addGameObject(new Bonus(new Point(5, 5), Bonus.BonusType.SPEED));
+    private boolean addPlayerToTicker(String player, Ticker ticker) {
+        if (ticker.addPlayers(player)) {
+            Girl girl = new Girl(new Point(0,0)); //TODO remake it
+            if (playerToGirl.putIfAbsent(player, girl) == null) {
+                ticker.addGameObject(girl);
+
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addPlayerAndStartGame(String player) {
         //TODO choose game session
-        int size = playerToGirl.size();
-        if (size < 4) {
-            Girl girl = new Girl(new Point(0,0)); //TODO remake it
-            gameSession.addGameObject(girl);
-            if (playerToGirl.putIfAbsent(player, girl) == null && playerToGirl.size() == 4) {
-                Broker.getInstance().broadcast(Topic.POSSESS, "");
-                log.info("Game started");
-                Broker.getInstance().broadcast(Topic.REPLICA, gameSession.getGameObjects());
-                ticker = new Ticker(gameSession);
-                ticker.loop();
+        synchronized (lock) {
+            for (Ticker ticker : tickers) {
+                if (addPlayerToTicker(player, ticker)) {
+                    if (ticker.canStartGame()) {
+                        Thread thread = new Thread(ticker);
+                        thread.start();
+                        log.info("Game started");
+                    }
+                    return;
+                }
+            }
+            Ticker ticker = new Ticker();
+            if (addPlayerToTicker(player, ticker)) {
+                tickers.add(ticker);
             }
         }
-
     }
 
     public void onMsgHandler(@NotNull String player, @NotNull Message msg) {
