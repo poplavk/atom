@@ -1,8 +1,14 @@
 package ru.atom.message;
 
 import org.junit.Test;
+import ru.atom.geometry.Point;
+import ru.atom.model.Bomb;
+import ru.atom.model.Fire;
+import ru.atom.model.GameSession;
 import ru.atom.model.Movable;
 import ru.atom.util.JsonHelper;
+
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 
@@ -48,7 +54,23 @@ public class MessageTest {
         System.out.println(directionJson);
 
         DirectionMsg parseDirectionMsg = JsonHelper.fromJson(directionJson, DirectionMsg.class);
+
         assertTrue(parseDirectionMsg.getDirection() == Movable.Direction.UP);
+    }
+
+    @Test
+    public void testReplica() {
+        GameSession session = new GameSession();
+        session.addGameObject(new Fire(new Point(90,90)));
+
+        String json = JsonHelper.toJson(session.getGameObjects());
+        Message parsedMessage = new Message(Topic.REPLICA, json);
+        System.out.println(json);
+        System.out.println(JsonHelper.toJson(parsedMessage));
+        assertTrue(Objects.equals(parsedMessage.getData(), "[{\"position\":{\"x\":90,\"y\":90},\"type\":\"Fire\",\"dead\":false}]"));
+
+        assertTrue(Objects.equals(JsonHelper.toJson(parsedMessage),
+                "{\"topic\":\"REPLICA\",\"data\":[{\\\"position\\\":{\\\"x\\\":90,\\\"y\\\":90},\\\"type\\\":\\\"Fire\\\",\\\"dead\\\":false}]}"));
     }
 
 

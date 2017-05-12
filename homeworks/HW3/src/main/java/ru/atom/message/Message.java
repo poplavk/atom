@@ -24,6 +24,9 @@ public class Message {
             case PLANT_BOMB:
                 this.data = "";
                 break;
+            case REPLICA:
+                this.data = data;
+                break;
             default:
                 this.data = data.toString();
         }
