@@ -8,7 +8,6 @@ import ru.atom.message.DirectionMsg;
 import ru.atom.message.Message;
 import ru.atom.message.Topic;
 import ru.atom.model.*;
-import ru.atom.network.Broker;
 import ru.atom.util.JsonHelper;
 
 import java.util.List;
@@ -36,10 +35,10 @@ public class GameController {
     }
 
     private boolean addPlayerToTicker(String player, Ticker ticker) {
-        if (ticker.addPlayers(player)) {
+        if (ticker.canAddPlayer(player)) {
             Girl girl = new Girl(new Point(1,1)); //TODO remake it
             if (playerToGirl.putIfAbsent(player, girl) == null) {
-                ticker.addGameObject(girl);
+                ticker.addPlayer(girl, player);
 
                 return true;
             }

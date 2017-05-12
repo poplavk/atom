@@ -36,8 +36,6 @@ public class GameSession implements Tickable {
 
     private void generateMap() {
         // TODO add map generator
-//        addGameObject(new Bonus(new Point(4, 4), Bonus.BonusType.FIRE));
-//        addGameObject(new Bonus(new Point(5, 5), Bonus.BonusType.SPEED));
     }
 
 

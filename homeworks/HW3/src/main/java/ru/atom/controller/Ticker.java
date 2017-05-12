@@ -7,11 +7,14 @@ import ru.atom.dbhackaton.server.mm.Connection;
 import ru.atom.dbhackaton.server.service.MatchMakerService;
 import ru.atom.message.Message;
 import ru.atom.message.Topic;
+import ru.atom.model.Bomb;
 import ru.atom.model.GameObject;
 import ru.atom.model.GameSession;
 import ru.atom.network.Broker;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -25,30 +28,24 @@ public class Ticker implements Runnable {
     private long tickNumber = 0;
 
     public static final int PLAYERS_IN_GAME = 1;
-    private final Connection[] connections;
     private final Integer id;
 
+    private final Broker broker = Broker.getInstance();
     private final Set<String> players = new CopyOnWriteArraySet<>();
+    private final HashMap<Integer, String> girlsIdToPlayer = new HashMap<Integer, String>();
+
     private final GameSession gameSession = new GameSession();
 
 
     public Ticker() {
         this.id = MatchMakerService.saveMatch(new Match());
-        this.connections = new Connection[PLAYERS_IN_GAME];
-        sendIdToConnections();
     }
 
     public long getId() {
         return id;
     }
 
-    public void sendIdToConnections(){
-        for (Connection connection: connections) {
-//            connection.setSessionId(id);
-        }
-    }
-
-    public boolean addPlayers(String player) {
+    public boolean canAddPlayer(String player) {
         if (players.size() < PLAYERS_IN_GAME) {
             return players.add(player);
         }
@@ -61,7 +58,8 @@ public class Ticker implements Runnable {
         return players.size() == PLAYERS_IN_GAME;
     }
 
-    public void addGameObject(GameObject gameObject) {
+    public void addPlayer(GameObject gameObject, String player) {
+        girlsIdToPlayer.put(gameObject.getId(), player);
         gameSession.addGameObject(gameObject);
     }
 
@@ -81,7 +79,7 @@ public class Ticker implements Runnable {
         return tickNumber;
     }
 
-    public boolean tick() {
+    private boolean tick() {
         long started = System.currentTimeMillis();
         act(FRAME_TIME);
         long elapsed = System.currentTimeMillis() - started;
@@ -98,7 +96,10 @@ public class Ticker implements Runnable {
 
     @Override
     public void run() {
-        Broker.getInstance().send("player", Topic.POSSESS, 2);
+        girlsIdToPlayer.forEach( (id, player) -> {
+            broker.send(player, Topic.POSSESS, id);
+        });
+
         while (!Thread.currentThread().isInterrupted()) {
             tick(); //todo handle game over
         }
