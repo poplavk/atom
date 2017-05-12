@@ -29,6 +29,7 @@ public class MessageTest {
         DirectionMsg directionMsg = new DirectionMsg(Movable.Direction.DOWN);
         Message message = new Message(Topic.MOVE, directionMsg);
         String json = JsonHelper.toJson(message);
+        System.out.println(json);
         Message parsedMessage = JsonHelper.fromJson(json, Message.class);
         assertTrue(message.equals(parsedMessage));
 
@@ -37,4 +38,18 @@ public class MessageTest {
         DirectionMsg parseDirectionMsg = JsonHelper.fromJson(directionJson, DirectionMsg.class);
         assertTrue(directionMsg.equals(parseDirectionMsg));
     }
+
+    @Test
+    public void testMoveDownParse() {
+        String json =  "{\"topic\":\"MOVE\",\"data\":{\"direction\":\"UP\"}}";
+        Message parsedMessage = JsonHelper.fromJson(json, Message.class);
+
+        String directionJson = parsedMessage.getData();
+        System.out.println(directionJson);
+
+        DirectionMsg parseDirectionMsg = JsonHelper.fromJson(directionJson, DirectionMsg.class);
+        assertTrue(parseDirectionMsg.getDirection() == Movable.Direction.UP);
+    }
+
+
 }

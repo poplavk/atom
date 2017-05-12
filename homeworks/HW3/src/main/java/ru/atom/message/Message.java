@@ -7,7 +7,7 @@ import ru.atom.util.JsonHelper;
 
 public class Message {
     private final Topic topic;
-    private final String data;
+    private final Object data;
 
     // TODO: 4/30/17 продумать вложенную стуктуру data с правильным мапингом в json (пока костыль)
 
@@ -15,7 +15,7 @@ public class Message {
         this.topic = topic;
         switch (topic) {
             case MOVE:
-                this.data = JsonHelper.toJson(data);
+                this.data = JsonHelper.getJsonNode(JsonHelper.toJson(data));
                 break;
             case HELLO:
             case POSSESS:
@@ -32,7 +32,12 @@ public class Message {
     @JsonCreator
     public Message(@JsonProperty("topic") Topic topic, @JsonProperty("data") JsonNode data) {
         this.topic = topic;
-        this.data = data.asText();
+        if (data.isTextual()) {
+            this.data = data.asText();
+        } else {
+            this.data = data;
+        }
+
     }
 
     public Topic getTopic() {
@@ -58,6 +63,6 @@ public class Message {
     }
 
     public String getData() {
-        return data;
+        return data.toString();
     }
 }
