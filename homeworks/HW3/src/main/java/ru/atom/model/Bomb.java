@@ -40,8 +40,6 @@ public class Bomb extends AbstractGameObject implements Temporary {
         if(isDead) {
             logger.info("BOOM! (BombId = {})", getId());
             owner.increaseBombCapacity();
-            //TODO думаю здесь не лучшая идея создавать огонь, как минимум потому что он не добавляется на карту
-//            new Fire(this.getPosition(), range);
         }
         return isDead;
     }
