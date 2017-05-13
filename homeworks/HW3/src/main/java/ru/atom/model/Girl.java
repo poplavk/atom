@@ -12,7 +12,7 @@ public class Girl extends AbstractGameObject implements Movable {
 
     private transient int  speed = 1;
     private transient int bombCapacity = 1;
-    private transient int rangeOfExplosion = 3;
+    private transient int rangeOfExplosion = 1;
     private transient long passedTimeMillis;
 
     //TODO  переделать это на зависимость от времени
@@ -81,7 +81,16 @@ public class Girl extends AbstractGameObject implements Movable {
         }
         wasActedOnTick = true;
         bombCapacity--;
-        bombForPlant = new Bomb(getPosition(), this, rangeOfExplosion);
+        int x = getPosition().getX() / 32;
+        int y = getPosition().getY() / 32;
+        if(x % 32 > 16) {
+            x++;
+        }
+        if(y % 32 > 16) {
+            y++;
+        }
+        Point bombPosition = new Point(x * 32, y * 32);
+        bombForPlant = new Bomb(bombPosition, this, rangeOfExplosion);
     }
 
     public synchronized void increaseBombCapacity() {

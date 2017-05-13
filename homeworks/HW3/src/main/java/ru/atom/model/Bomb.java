@@ -21,7 +21,6 @@ public class Bomb extends AbstractGameObject implements Temporary {
         this.range = range;
         this.owner = owner;
         logger.info("new Bomb! id = {} x = {} y = {}", getId(), point.getX(), point.getY());
-
     }
 
     @Override
@@ -52,10 +51,10 @@ public class Bomb extends AbstractGameObject implements Temporary {
 
         blast.add(new Fire(blastFocus));
         for (int i = 1; i < range + 1; i++) {
-            blast.add(new Fire(new Point(xBlastFocus, yBlastFocus + i)));
-            blast.add(new Fire(new Point(xBlastFocus, yBlastFocus - i)));
-            blast.add(new Fire(new Point(xBlastFocus + i, yBlastFocus)));
-            blast.add(new Fire(new Point(xBlastFocus - i, yBlastFocus)));
+            blast.add(new Fire(new Point(xBlastFocus, yBlastFocus + 32 * i)));
+            blast.add(new Fire(new Point(xBlastFocus, yBlastFocus - 32 * i)));
+            blast.add(new Fire(new Point(xBlastFocus + 32 * i, yBlastFocus)));
+            blast.add(new Fire(new Point(xBlastFocus - 32 * i, yBlastFocus)));
         }
 
         return blast;

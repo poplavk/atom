@@ -91,6 +91,8 @@ GameEngine = Class.extend({
         // Toggle sound
         gInputEngine.subscribe('mute', this.toggleSound);
 
+        this.drawTiles();
+
         // Restart listener
         // Timeout because when you press enter in address bar too long, it would not show menu
         setTimeout(function() {
@@ -125,6 +127,23 @@ GameEngine = Class.extend({
 
         if (!this.playing) {
             this.menu.show();
+        }
+    },
+
+    drawTiles: function() {
+        for (var i = 0; i < this.tilesY; i++) {
+            for (var j = 0; j < this.tilesX; j++) {
+                // Grass tiles
+                var img = new Image();
+                img.src = "img/tile_grass.png";
+
+                var bitmap = new createjs.Bitmap(img);
+
+                bitmap.x = j * 32;
+                bitmap.y = i * 32;
+
+                this.stage.addChild(bitmap);
+            }
         }
     },
 
@@ -214,7 +233,6 @@ GameEngine = Class.extend({
                     it[i].remove();
                     it.splice(i, 1);
                 }
-
             }
         });
 
