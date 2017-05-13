@@ -2,6 +2,7 @@ package ru.atom.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import ru.atom.dbhackaton.server.base.Match;
 import ru.atom.dbhackaton.server.mm.Connection;
 import ru.atom.dbhackaton.server.service.MatchMakerService;
@@ -23,7 +24,7 @@ import java.util.concurrent.locks.LockSupport;
 
 public class Ticker implements Runnable {
     private static final Logger log = LogManager.getLogger(Ticker.class);
-    private static final int FPS = 10;
+    private static final int FPS = 2;
     private static final long FRAME_TIME = 1000 / FPS;
     private long tickNumber = 0;
 
@@ -46,12 +47,22 @@ public class Ticker implements Runnable {
     }
 
     public boolean canAddPlayer(String player) {
-        if (players.size() < PLAYERS_IN_GAME) {
-            return players.add(player);
+        return players.size() < PLAYERS_IN_GAME && players.add(player);
+    }
+
+    public boolean canRestorePlayer(@NotNull String player) {
+        if (players.contains(player)) {
+            broker.send(player,
+                    Topic.POSSESS,
+                    girlsIdToPlayer.entrySet().stream()
+                            .filter(entry -> entry.getValue().equals(player))
+                            .map(Map.Entry::getKey)
+                            .findFirst()
+                            .orElseGet(null));
+            return true;
         }
         return false;
     }
-
 
 
     public boolean canStartGame() {

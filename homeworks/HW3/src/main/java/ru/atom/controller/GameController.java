@@ -39,7 +39,6 @@ public class GameController {
             Girl girl = new Girl(new Point(1,1)); //TODO remake it
             if (playerToGirl.putIfAbsent(player, girl) == null) {
                 ticker.addPlayer(girl, player);
-
                 return true;
             }
         }
@@ -50,6 +49,10 @@ public class GameController {
         //TODO choose game session
         synchronized (lock) {
             for (Ticker ticker : tickers) {
+                if (ticker.canRestorePlayer(player)) {
+                    return;
+                }
+
                 if (addPlayerToTicker(player, ticker)) {
                     if (ticker.canStartGame()) {
 

@@ -6,8 +6,11 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ConnectionPool {
     private static final Logger log = LogManager.getLogger(ConnectionPool.class);
@@ -50,19 +53,24 @@ public class ConnectionPool {
     }
 
     public Session getSession(String player) {
-        return pool.entrySet().stream()
+        List<Session> optionalSession = pool.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(player))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElseGet(null);
+                .map(Map.Entry::getKey).collect(Collectors.toList());
+
+        if (optionalSession.isEmpty()) {
+            return null;
+        } else {
+            return optionalSession.get(0);
+        }
     }
 
-    public boolean add(Session session, String player) {
-        if (pool.putIfAbsent(session, player) == null) {
-            log.info("{} joined", player);
-            return true;
+    public void add(Session session, String player) {
+        Session old = getSession(player);
+        if (old != null) {
+            pool.remove(old);
         }
-        return false;
+        pool.putIfAbsent(session, player);
+        log.info("{} joined; All on server: {}", player, pool.size());
     }
 
     public void remove(Session session) {
