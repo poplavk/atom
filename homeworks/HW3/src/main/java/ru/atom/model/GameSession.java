@@ -116,6 +116,7 @@ public class GameSession implements Tickable {
         addWall(11, 7);
         addWall(11, 6);
         addWall(11, 5);
+
     }
 
 

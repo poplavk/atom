@@ -5,11 +5,6 @@ Bomb = Entity.extend({
     position: {},
 
     /**
-     * How far the fire reaches when bomb explodes
-     */
-    strength: 1,
-
-    /**
      * Bitmap dimensions
      */
     size: {
@@ -38,17 +33,16 @@ Bomb = Entity.extend({
 
     explodeListener: null,
 
-    init: function(id, position, strength) {
+    init: function(id, position) {
         this.id = id;
-        this.strength = strength;
 
         var spriteSheet = new createjs.SpriteSheet({
             images: [gGameEngine.bombImg],
             frames: {
                 width: this.size.w,
                 height: this.size.h,
-                regX: 5,
-                regY: 5
+                regX: -1,
+                regY: -1
             },
             animations: {
                 idle: [0, 4, "idle", 0.2]
