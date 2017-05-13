@@ -6,44 +6,43 @@ ServerProxy = Class.extend({
 
     handler: {},
 
-    getInstance: function() {
+    getInstance: function () {
         return this;
     },
 
-    init: function() {
+    init: function () {
         this.handler['REPLICA'] = gMessages.handleReplica;
         this.handler['POSSESS'] = gMessages.handlePossess;
 
         var self = this;
-        gInputEngine.subscribe('up', function() {
+        gInputEngine.subscribe('up', function () {
             self.socket.send(gMessages.move('up'))
         });
-        gInputEngine.subscribe('down', function() {
+        gInputEngine.subscribe('down', function () {
             self.socket.send(gMessages.move('down'))
         });
-        gInputEngine.subscribe('left', function() {
+        gInputEngine.subscribe('left', function () {
             self.socket.send(gMessages.move('left'))
         });
-        gInputEngine.subscribe('right', function() {
+        gInputEngine.subscribe('right', function () {
             self.socket.send(gMessages.move('right'))
         });
-        gInputEngine.subscribe('bomb', function() {
+        gInputEngine.subscribe('bomb', function () {
             self.socket.send(gMessages.plantBomb())
         });
 
         this.initSocket();
     },
 
-    initSocket: function() {
+    initSocket: function () {
         var self = this;
         this.socket = new WebSocket("ws://" + this.host + "/events");
 
-        this.socket.onopen = function() {
-            console.log("Connection established.");
-            gGameEngine.serverProxy.socket.send(gMessages.hello('player'));
+        this.socket.onopen = function () {
+            gGameEngine.serverProxy.socket.send(gMessages.hello("testplayer"));
         };
 
-        this.socket.onclose = function(event) {
+        this.socket.onclose = function (event) {
             if (event.wasClean) {
                 console.log('closed');
             } else {
@@ -52,15 +51,16 @@ ServerProxy = Class.extend({
             console.log('Code: ' + event.code + ' cause: ' + event.reason);
         };
 
-        this.socket.onmessage = function(event) {
+        this.socket.onmessage = function (event) {
             var msg = JSON.parse(event.data);
+            console.log(msg);
             if (self.handler[msg.topic] === undefined)
                 return;
 
             self.handler[msg.topic](msg);
         };
 
-        this.socket.onerror = function(error) {
+        this.socket.onerror = function (error) {
             console.log("Error " + error.message);
         };
     }

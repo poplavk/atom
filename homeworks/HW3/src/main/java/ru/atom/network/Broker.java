@@ -37,11 +37,11 @@ public class Broker {
         Message message = JsonHelper.fromJson(msg, Message.class);
         Topic topic = message.getTopic();
 
-        if (topic==Topic.HELLO) {
+        if (topic == Topic.HELLO) {
             String player = message.getData();
-            if (connectionPool.add(session, player)) {
-                gameController.addPlayerAndStartGame(player);
-            }
+            connectionPool.add(session, player);
+            gameController.addPlayerAndStartGame(player);
+
             return;
         }
 
@@ -54,12 +54,14 @@ public class Broker {
     public void send(@NotNull String player, @NotNull Topic topic, @NotNull Object object) {
         String message = JsonHelper.toJson(new Message(topic, object));
         Session session = connectionPool.getSession(player);
-        log.info("msg to {}: {}",player, message);
-        connectionPool.send(session, message);
+        if (session != null) {
+            log.info("msg to {}: {}", player, message);
+            connectionPool.send(session, message);
+        }
     }
 
     public void broadcast(@NotNull Topic topic, @NotNull Object object) {
-        String message = JsonHelper.toJson(new Message(topic, JsonHelper.toJson(object)));
+        String message = JsonHelper.toJson(new Message(topic, object));
         log.info("broadcast: {}", message);
         connectionPool.broadcast(message);
     }
