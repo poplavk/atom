@@ -10,13 +10,21 @@ import ru.atom.geometry.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GameSession implements Tickable {
     private static final Logger logger = LogManager.getLogger(ru.atom.dbhackaton.server.mm.GameSession.class);
+
+    public static final int TILE_SIZE = 32;
+    public static final int TILES_X = 17;
+    public static final int TILES_Y = 13;
 //    private static AtomicLong idGenerator = new AtomicLong();
 
     private static final Logger log = LogManager.getLogger(GameSession.class);
     private List<GameObject> gameObjects = new ArrayList<>();
+
+//    private ConcurrentHashMap<Point, GameObject> canvas = new ConcurrentHashMap<>();
+
     private static int lastId = 0;
 
     //TODO мне ненравится
@@ -35,7 +43,17 @@ public class GameSession implements Tickable {
 
 
     private void generateMap() {
-        gameObjects.add(new Wall(new Point(10, 10), Wall.BrickType.UNBREACABLE));
+//        gameObjects.add(new Wall(new Point(10, 10), Wall.BrickType.UNBREACABLE));
+        //внешние стенки
+        for (int i = 0; i < TILES_Y; i++) {
+            gameObjects.add(new Wall(new Point(0, i), Wall.BrickType.UNBREACABLE));
+            gameObjects.add(new Wall(new Point(TILES_X - 1, i), Wall.BrickType.UNBREACABLE));
+
+        }
+        for (int i = 0; i < TILES_X; i++) {
+            gameObjects.add(new Wall(new Point(i, 0), Wall.BrickType.UNBREACABLE));
+            gameObjects.add(new Wall(new Point(i, TILES_Y - 1), Wall.BrickType.UNBREACABLE));
+        }
         // TODO add map generator
     }
 
@@ -53,7 +71,7 @@ public class GameSession implements Tickable {
         for (GameObject gameObject : gameObjects) {
             if (gameObject instanceof Girl) {
                 Bomb bomb = ((Girl) gameObject).getBombForPlant();
-                if ( bomb != null) {
+                if (bomb != null) {
                     newObjects.add(bomb);
                 }
             }

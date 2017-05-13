@@ -3,11 +3,13 @@ package ru.atom.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import ru.atom.dbhackaton.server.mm.*;
 import ru.atom.geometry.Point;
 import ru.atom.message.DirectionMsg;
 import ru.atom.message.Message;
 import ru.atom.message.Topic;
 import ru.atom.model.*;
+import ru.atom.model.GameSession;
 import ru.atom.util.JsonHelper;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class GameController {
 
     private boolean addPlayerToTicker(String player, Ticker ticker) {
         if (ticker.canAddPlayer(player)) {
-            Girl girl = new Girl(new Point(1,1)); //TODO remake it
+            Girl girl = new Girl(new Point(GameSession.TILE_SIZE,GameSession.TILE_SIZE)); //TODO remake it
             if (playerToGirl.putIfAbsent(player, girl) == null) {
                 ticker.addPlayer(girl, player);
 
