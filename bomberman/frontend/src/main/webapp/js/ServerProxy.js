@@ -40,6 +40,7 @@ ServerProxy = Class.extend({
 
         this.socket.onopen = function() {
             console.log("Connection established.");
+            gGameEngine.serverProxy.socket.send(gMessages.hello('player'));
         };
 
         this.socket.onclose = function(event) {

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Bomb extends AbstractGameObject implements Temporary {
     private static final Logger logger = LogManager.getLogger(Bomb.class);
-    private final transient int LIFE_TIME = 20;
+    private final transient int LIFE_TIME = 300;
 
     private transient int range;
     private transient long passedTimeMillis;

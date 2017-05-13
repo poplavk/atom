@@ -31,7 +31,7 @@ public class MessageTest {
     }
 
     @Test
-    public void testMoveParse() {
+    public void testMoveParseToJson() {
         DirectionMsg directionMsg = new DirectionMsg(Movable.Direction.DOWN);
         Message message = new Message(Topic.MOVE, directionMsg);
         String json = JsonHelper.toJson(message);
@@ -46,7 +46,7 @@ public class MessageTest {
     }
 
     @Test
-    public void testMoveDownParse() {
+    public void testMoveParseFromJson() {
         String json =  "{\"topic\":\"MOVE\",\"data\":{\"direction\":\"UP\"}}";
         Message parsedMessage = JsonHelper.fromJson(json, Message.class);
 
@@ -59,18 +59,15 @@ public class MessageTest {
     }
 
     @Test
-    public void testReplica() {
+    public void testReplicaToJson() {
         GameSession session = new GameSession();
         session.addGameObject(new Fire(new Point(90,90)));
 
-        String json = JsonHelper.toJson(session.getGameObjects());
-        Message parsedMessage = new Message(Topic.REPLICA, json);
-        System.out.println(json);
+        Message parsedMessage = new Message(Topic.REPLICA, session.getGameObjects());
         System.out.println(JsonHelper.toJson(parsedMessage));
-        assertTrue(Objects.equals(parsedMessage.getData(), "[{\"position\":{\"x\":90,\"y\":90},\"type\":\"Fire\",\"dead\":false}]"));
 
         assertTrue(Objects.equals(JsonHelper.toJson(parsedMessage),
-                "{\"topic\":\"REPLICA\",\"data\":[{\\\"position\\\":{\\\"x\\\":90,\\\"y\\\":90},\\\"type\\\":\\\"Fire\\\",\\\"dead\\\":false}]}"));
+                "{\"topic\":\"REPLICA\",\"data\":[{\"position\":{\"x\":90,\"y\":90},\"type\":\"Fire\",\"dead\":false}]}"));
     }
 
 

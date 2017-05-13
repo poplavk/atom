@@ -210,9 +210,11 @@ GameEngine = Class.extend({
             var i = it.length;
             while (i--) {
                 if (!survivors.has(it[i].id)) {
+                    console.log(it[i] + " removed");
                     it[i].remove();
                     it.splice(i, 1);
                 }
+
             }
         });
 

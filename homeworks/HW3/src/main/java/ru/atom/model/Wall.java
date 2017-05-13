@@ -15,11 +15,11 @@ public class Wall extends AbstractGameObject {
         UNBREACABLE,
     }
 
-    private BrickType type;
+    private transient BrickType wallType;
 
     public Wall(Point point, BrickType type) {
         super(point, "Wall");
-        this.type = type;
+        this.wallType = type;
         logger.info("new Wall! id = {} x = {} y = {} Type = {}", getId(), point.getX(), point.getY(), type);
 
     }

@@ -3,20 +3,20 @@ Menu = Class.extend({
 
     views: [],
 
-    init: function() {
+    init: function () {
         gGameEngine.botsCount = 4;
         gGameEngine.playersCount = 0;
 
         this.showLoader();
     },
 
-    show: function(text) {
+    show: function (text) {
         this.visible = true;
 
         this.draw(text);
     },
 
-    hide: function() {
+    hide: function () {
         this.visible = false;
 
         for (var i = 0; i < this.views.length; i++) {
@@ -26,7 +26,7 @@ Menu = Class.extend({
         this.views = [];
     },
 
-    update: function() {
+    update: function () {
         if (this.visible) {
             for (var i = 0; i < this.views.length; i++) {
                 gGameEngine.moveToFront(this.views[i]);
@@ -34,23 +34,23 @@ Menu = Class.extend({
         }
     },
 
-    setHandCursor: function(btn) {
-        btn.addEventListener('mouseover', function() {
+    setHandCursor: function (btn) {
+        btn.addEventListener('mouseover', function () {
             document.body.style.cursor = 'pointer';
         });
-        btn.addEventListener('mouseout', function() {
+        btn.addEventListener('mouseout', function () {
             document.body.style.cursor = 'auto';
         });
     },
 
-    setMode: function(mode) {
+    setMode: function (mode) {
         this.hide();
 
         gGameEngine.playing = true;
         gGameEngine.restart();
     },
 
-    draw: function(text) {
+    draw: function (text) {
         var that = this;
 
         // semi-transparent black background
@@ -82,11 +82,11 @@ Menu = Class.extend({
         gGameEngine.stage.addChild(singleBg);
         this.views.push(singleBg);
         this.setHandCursor(singleBg);
-        singleBg.addEventListener('click', function() {
+        singleBg.addEventListener('click', function () {
             that.setMode('single');
-            setTimeout(function () {
-                gGameEngine.serverProxy.socket.send(gMessages.hello('player'));
-            }, 3000)
+            while (gGameEngine.serverProxy.socket.readyState === WebSocket.OPEN) {
+                that.showLoader()
+            }
         });
 
         var singleTitle = new createjs.Text("Play", "16px Helvetica", "#ff4444");
@@ -108,7 +108,7 @@ Menu = Class.extend({
 
     },
 
-    showLoader: function() {
+    showLoader: function () {
         var bgGraphics = new createjs.Graphics().beginFill("#000000").drawRect(0, 0, gGameEngine.size.w, gGameEngine.size.h);
         var bg = new createjs.Shape(bgGraphics);
         gGameEngine.stage.addChild(bg);

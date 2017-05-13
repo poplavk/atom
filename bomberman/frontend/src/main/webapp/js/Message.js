@@ -40,9 +40,11 @@ Messages = Class.extend({
 
     handleReplica: function (msg) {
 
-        var gameObjects = JSON.parse(msg.data);
-
+//        var gameObjects = JSON.parse(msg.data);
+        var gameObjects = msg.data;
+//        console.log(msg.data)
 //        var gameObjects = JSON.parse(msg.data).objects;
+        console.log(gameObjects)
         var survivors = new Set();
 
 
@@ -81,6 +83,8 @@ Messages = Class.extend({
         var bomb = gGameEngine.bombs.find(function (el) {
             return el.id === obj.id;
         });
+        console.log(" obj.id= " + obj.id)
+
         var position = Utils.getEntityPosition(obj.position);
 
         if (bomb) {

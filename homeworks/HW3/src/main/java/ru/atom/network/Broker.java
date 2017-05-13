@@ -52,7 +52,7 @@ public class Broker {
     }
 
     public void send(@NotNull String player, @NotNull Topic topic, @NotNull Object object) {
-        String message = JsonHelper.toJson(new Message(topic, JsonHelper.toJson(object)));
+        String message = JsonHelper.toJson(new Message(topic, object));
         Session session = connectionPool.getSession(player);
         log.info("msg to {}: {}",player, message);
         connectionPool.send(session, message);

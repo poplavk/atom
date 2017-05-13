@@ -35,6 +35,7 @@ public class GameSession implements Tickable {
 
 
     private void generateMap() {
+        gameObjects.add(new Wall(new Point(10, 10), Wall.BrickType.UNBREACABLE));
         // TODO add map generator
     }
 

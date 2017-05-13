@@ -10,7 +10,7 @@ import ru.atom.geometry.Point;
 public abstract class AbstractGameObject implements Positionable {
     private static final Logger logger = LogManager.getLogger(GameSession.class);
 
-    private final transient int id;
+    private final int id;
     private Point position;
     private final String type;
 

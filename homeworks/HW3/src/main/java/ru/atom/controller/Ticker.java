@@ -23,7 +23,7 @@ import java.util.concurrent.locks.LockSupport;
 
 public class Ticker implements Runnable {
     private static final Logger log = LogManager.getLogger(Ticker.class);
-    private static final int FPS = 60;
+    private static final int FPS = 10;
     private static final long FRAME_TIME = 1000 / FPS;
     private long tickNumber = 0;
 
@@ -70,9 +70,9 @@ public class Ticker implements Runnable {
     private void act(long time) {
         //Your logic here
         gameSession.tick(time);
-        for (String player: players) {
-            Broker.getInstance().send(player, Topic.REPLICA, gameSession.getGameObjects());
-        }
+        players.forEach(player -> {
+            broker.send(player, Topic.REPLICA, gameSession.getGameObjects());
+        });
     }
 
     public long getTickNumber() {
