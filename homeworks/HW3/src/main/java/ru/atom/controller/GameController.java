@@ -89,6 +89,7 @@ public class GameController {
         log.info("msg.data: {}", json);
         if (topic == Topic.MOVE) {
             DirectionMsg directionMsg = JsonHelper.fromJson(json, DirectionMsg.class);
+            // TODO: 5/13/17 move в тике?????
             girl.move(directionMsg.getDirection());
             return;
         }

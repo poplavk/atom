@@ -11,8 +11,8 @@ public final class TestGameSessionCreator {
 
     static GameSession createGameSession() {
         GameSession gameSession = new GameSession();
-        gameSession.addGameObject(new Wall(new Point(0, 0), Wall.BrickType.UNBREACABLE));
-        gameSession.addGameObject(new Wall(new Point(0, 4), Wall.BrickType.UNBREACABLE));
+        gameSession.addGameObject(new Tile(new Point(0, 0), Tile.TileType.Wall));
+        gameSession.addGameObject(new Tile(new Point(0, 4), Tile.TileType.Wall));
 
         gameSession.addGameObject(new Girl(new Point(0, 2)));
         gameSession.addGameObject(new Girl(new Point(1, 2)));

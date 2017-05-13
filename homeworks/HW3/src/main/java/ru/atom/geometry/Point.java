@@ -47,4 +47,13 @@ public class Point implements Collider {
         }
         throw new NotImplementedException();
     }
+
+//    @Override
+//    public boolean isColliding(Collider other) {
+//        if (this.x == ((Point) other).getX() && this.y == ((Point) other).getY()) {
+//            return true;
+//        }
+//
+//        return false;
+//    }
 }
