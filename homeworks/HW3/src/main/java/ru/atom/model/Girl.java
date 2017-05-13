@@ -83,10 +83,10 @@ public class Girl extends AbstractGameObject implements Movable {
         bombCapacity--;
         int x = getPosition().getX() / 32;
         int y = getPosition().getY() / 32;
-        if(x % 32 > 16) {
+        if(getPosition().getX() % 32 > 16) {
             x++;
         }
-        if(y % 32 > 16) {
+        if(getPosition().getY() % 32 > 16) {
             y++;
         }
         Point bombPosition = new Point(x * 32, y * 32);
