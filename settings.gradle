@@ -1,12 +1,5 @@
 rootProject.name = 'atom'
-include 'lecture09'
-
 include 'homeworks/HW1'
 include 'homeworks/HW3'
-
-
-include 'web_hackaton'
-include 'db_hackaton'
-include 'tasks/1-in-memory-account-server'
 
 include 'bomberman/frontend'

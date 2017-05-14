@@ -6,12 +6,17 @@ import ru.atom.game.server.geometry.Point;
 import ru.atom.game.server.message.DirectionMsg;
 import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
-import ru.atom.game.server.model.*;
+import ru.atom.game.server.model.GameObject;
+import ru.atom.game.server.model.GameSession;
+import ru.atom.game.server.model.Girl;
+import ru.atom.game.server.model.Movable;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 
 /**
  * Created by dmbragin on 5/3/17.
@@ -21,7 +26,7 @@ public class GameControllerTest {
 
     @Before
     public void init() {
-        for (Integer i=0; i < 4; i++) {
+        for (Integer i = 0; i < 4; i++) {
             gameController.addPlayerAndStartGame(i.toString());
         }
     }
@@ -29,7 +34,7 @@ public class GameControllerTest {
     @Test
     public void testStartGame() {
         int gamesCount = gameController.getTickers().size();
-        for (Integer i=4; i < 9; i++) {
+        for (Integer i = 4; i < 9; i++) {
             gameController.addPlayerAndStartGame(i.toString());
         }
         assertEquals(gamesCount + 2, gameController.getTickers().size());
@@ -43,7 +48,7 @@ public class GameControllerTest {
                 .filter(o -> o instanceof Girl)
                 .map(o -> (Girl) o).collect(Collectors.toList());
         Point oldPoint = girls.get(0).getPosition();
-        for (Integer i=0; i < 4; i++) {
+        for (Integer i = 0; i < 4; i++) {
             Message msg = new Message(Topic.MOVE, new DirectionMsg(Movable.Direction.UP));
             gameController.onMsgHandler(i.toString(), msg);
         }
@@ -60,7 +65,7 @@ public class GameControllerTest {
                 .filter(o -> o instanceof Girl)
                 .map(o -> (Girl) o).collect(Collectors.toList());
         int oldSize = objects.size();
-        for (Integer i=0; i < 4; i++) {
+        for (Integer i = 0; i < 4; i++) {
             Message msg = new Message(Topic.PLANT_BOMB, "");
             gameController.onMsgHandler(i.toString(), msg);
         }

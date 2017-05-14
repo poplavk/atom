@@ -7,9 +7,8 @@ import ru.atom.game.server.model.GameSession;
 import ru.atom.game.server.model.Movable;
 import ru.atom.game.server.util.JsonHelper;
 
-import java.util.Objects;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
 
 public class MessageTest {
 

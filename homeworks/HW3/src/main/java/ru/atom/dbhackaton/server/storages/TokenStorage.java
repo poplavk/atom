@@ -40,17 +40,6 @@ public class TokenStorage {
         return tokensMap.containsKey(token);
     }
 
-//    public static Token generateToken() {
-//        final SecureRandom random = new SecureRandom();
-//        final long newValueToken = random.nextLong();
-//        final Token newToken = new Token();
-//        if (checkToken(newToken)) {
-//            generateToken();
-//        }
-//
-//        return newToken;
-//    }
-
     public static boolean containsUser(User user) {
         return tokensMap.containsValue(user);
     }

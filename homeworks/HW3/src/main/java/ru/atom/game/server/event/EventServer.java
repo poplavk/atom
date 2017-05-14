@@ -25,8 +25,7 @@ public class EventServer {
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         context.setContextPath("/");
         contexts.setHandlers(new Handler[]{
-                createResourceContext(),
-                context
+                createResourceContext(), context
         });
         server.setHandler(contexts);
 

@@ -59,6 +59,7 @@ public class EventClient {
             log.error("Ошибка при отправке сообщения {}", json);
         }
     }
+
     public void sendMove(Movable.Direction direction) {
         Message message = new Message(Topic.MOVE, new DirectionMsg(direction));
         ObjectMapper mapper = new ObjectMapper();
@@ -89,31 +90,4 @@ public class EventClient {
             log.error("Ошибка при отправке сообщения {}", json);
         }
     }
-
-//    public static void main(String[] args) {
-//
-//        WebSocketClient client = new WebSocketClient();
-//        final URI uri = URI.create("ws://localhost:8090/events/");
-//
-//        try {
-//            try {
-//                client.start();
-//                // The socket that receives events
-//                EventHandler socket = new EventHandler();
-//                // Attempt Connect
-//                Future<Session> fut = client.connect(socket, uri);
-//                // Wait for Connect
-//                Session session = fut.get();
-//                // Send a message
-//
-//                session.getRemote().sendString("Hello");
-//                // Close session
-//                session.close();
-//            } finally {
-//                client.stop();
-//            }
-//        } catch (Throwable t) {
-//            t.printStackTrace(System.err);
-//        }
-//    }
 }

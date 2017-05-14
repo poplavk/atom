@@ -26,12 +26,12 @@ public class AuthTest {
     private static final String PASSWORD_4 = "Scccpass";
 
     @Before
-    public void setup() throws Exception{
+    public void setup() throws Exception {
         AuthServer.authStart();
     }
 
     @After
-    public void stop() throws Exception{
+    public void stop() throws Exception {
         AuthServer.authStop();
     }
 
@@ -89,7 +89,7 @@ public class AuthTest {
     }*/
 
     @Test
-    public void registerCheckFalse() throws IOException, AuthException{
+    public void registerCheckFalse() throws IOException, AuthException {
         AuthClient.register(USER_4,PASSWORD_4);
         Assert.assertEquals("False", AuthService.registerCheck(USER_4));
     }

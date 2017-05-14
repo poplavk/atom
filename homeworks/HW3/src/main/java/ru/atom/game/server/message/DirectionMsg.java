@@ -11,7 +11,7 @@ public class DirectionMsg {
 
     private Movable.Direction direction;
 
-    @JsonCreator(mode=JsonCreator.Mode.PROPERTIES)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DirectionMsg(@JsonProperty("direction") String direction) {
         this.direction = Movable.Direction.valueOf(direction);
     }

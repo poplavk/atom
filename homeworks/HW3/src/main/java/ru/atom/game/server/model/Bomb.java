@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Bomb extends AbstractGameObject implements Temporary {
     private static final Logger logger = LogManager.getLogger(Bomb.class);
-    private final transient int LIFE_TIME = 300;
+    private final transient int lifeTime = 300;
 
     private transient int range;
     private transient long passedTimeMillis;
@@ -30,13 +30,13 @@ public class Bomb extends AbstractGameObject implements Temporary {
 
     @Override
     public long getLifetimeMillis() {
-        return LIFE_TIME;
+        return lifeTime;
     }
 
     @Override
     public boolean isDead() {
-        boolean isDead = (passedTimeMillis > LIFE_TIME);
-        if(isDead) {
+        boolean isDead = (passedTimeMillis > lifeTime);
+        if (isDead) {
             logger.info("BOOM! (BombId = {})", getId());
             owner.increaseBombCapacity();
         }
@@ -46,15 +46,15 @@ public class Bomb extends AbstractGameObject implements Temporary {
     public List<Fire> getBlast() {
         List<Fire> blast = new ArrayList<>();
         Point blastFocus = getPosition();
-        int xBlastFocus = blastFocus.getX();
-        int yBlastFocus = blastFocus.getY();
+        int blastFocusX = blastFocus.getX();
+        int blastFocusY = blastFocus.getY();
 
         blast.add(new Fire(blastFocus));
         for (int i = 1; i < range + 1; i++) {
-            blast.add(new Fire(new Point(xBlastFocus, yBlastFocus + 32 * i)));
-            blast.add(new Fire(new Point(xBlastFocus, yBlastFocus - 32 * i)));
-            blast.add(new Fire(new Point(xBlastFocus + 32 * i, yBlastFocus)));
-            blast.add(new Fire(new Point(xBlastFocus - 32 * i, yBlastFocus)));
+            blast.add(new Fire(new Point(blastFocusX, blastFocusY + 32 * i)));
+            blast.add(new Fire(new Point(blastFocusX, blastFocusY - 32 * i)));
+            blast.add(new Fire(new Point(blastFocusX + 32 * i, blastFocusY)));
+            blast.add(new Fire(new Point(blastFocusX - 32 * i, blastFocusY)));
         }
 
         return blast;

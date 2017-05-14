@@ -102,7 +102,7 @@ public class Ticker implements Runnable {
 
     @Override
     public void run() {
-        girlsIdToPlayer.forEach( (id, player) -> {
+        girlsIdToPlayer.forEach((id, player) -> {
             broker.send(player, Topic.POSSESS, id);
         });
 

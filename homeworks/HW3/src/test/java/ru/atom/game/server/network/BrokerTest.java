@@ -12,16 +12,13 @@ public class BrokerTest {
     private EventClient eventClient = new EventClient();
     private List<EventClient> eventClients = new ArrayList<>();
     private boolean firstRun = true;
-    private final int COUNT = 4;
+    private final int count = 4;
 
     @Before
     public void start() {
         if (firstRun) {
 
-//            eventClient.connect();
-            int i = 0;
-            while (i < COUNT) {
-                i++;
+            for (int i = 0; i < count; i++) {
                 EventClient client = new EventClient();
                 client.connect();
                 eventClients.add(client);
@@ -32,24 +29,16 @@ public class BrokerTest {
         }
     }
 
-//    @Test
-//    public void removeSession() throws Exception {
-//    }
-//
-//    @Test
-//    public void receive() throws Exception {
-//    }
-
     @Test
     public void addPlayerAndStartGame() throws Exception {
-        for (int i=0; i < 4; i++ ) {
+        for (int i = 0; i < 4; i++) {
             eventClients.get(i).sendHello(String.valueOf(i));
         }
     }
 
     @Test
     public void onMsgHandlerMove() throws Exception {
-        for (int j=0; j < 4; j++ ) {
+        for (int j = 0; j < 4; j++) {
             eventClients.get(j).sendMove(Movable.Direction.DOWN);
             eventClients.get(j).sendMove(Movable.Direction.RIGHT);
         }
@@ -57,17 +46,8 @@ public class BrokerTest {
 
     @Test
     public void onMsgHandlerPlantBomb() throws Exception {
-        for (int j=0; j < COUNT; j++ ) {
+        for (int j = 0; j < count; j++) {
             eventClients.get(j).sendPlantBomb();
         }
     }
-
-//    @Test
-//    public void send() throws Exception {
-//    }
-//
-//    @Test
-//    public void broadcast() throws Exception {
-//    }
-
 }

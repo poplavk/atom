@@ -14,12 +14,12 @@ public class GameSession implements Tickable {
     public static final int TILE_SIZE = 32;
     public static final int TILES_X = 17;
     public static final int TILES_Y = 13;
-//    private static AtomicLong idGenerator = new AtomicLong();
+    //    private static AtomicLong idGenerator = new AtomicLong();
 
     private static final Logger log = LogManager.getLogger(GameSession.class);
     private List<GameObject> gameObjects = new ArrayList<>();
 
-//    private ConcurrentHashMap<Point, GameObject> canvas = new ConcurrentHashMap<>();
+    //    private ConcurrentHashMap<Point, GameObject> canvas = new ConcurrentHashMap<>();
 
     private static int lastId = 0;
 

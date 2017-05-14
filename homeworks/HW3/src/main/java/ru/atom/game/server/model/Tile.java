@@ -10,7 +10,7 @@ import ru.atom.game.server.geometry.Point;
 public class Tile extends AbstractGameObject {
     private static final Logger logger = LogManager.getLogger(Tile.class);
 
-    public enum TileType{
+    public enum TileType {
         Wall,
         Wood
     }

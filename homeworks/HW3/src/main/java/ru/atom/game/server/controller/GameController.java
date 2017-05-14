@@ -7,8 +7,8 @@ import ru.atom.game.server.geometry.Point;
 import ru.atom.game.server.message.DirectionMsg;
 import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
-import ru.atom.game.server.model.*;
 import ru.atom.game.server.model.GameSession;
+import ru.atom.game.server.model.Girl;
 import ru.atom.game.server.util.JsonHelper;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class GameController {
     private static final Object lock = new Object();
 
     //TODO maybe make it singleton?
-    static public GameController getInstance() {
+    public static GameController getInstance() {
         return new GameController();
     }
 
@@ -92,7 +92,7 @@ public class GameController {
             girl.move(directionMsg.getDirection());
             return;
         }
-        if (topic==Topic.PLANT_BOMB) {
+        if (topic == Topic.PLANT_BOMB) {
             girl.plantBomb();
             return;
         }

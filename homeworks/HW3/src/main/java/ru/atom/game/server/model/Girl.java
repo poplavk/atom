@@ -32,7 +32,7 @@ public class Girl extends AbstractGameObject implements Movable {
     }
 
 
-    private void setNewPosition(Point newPosition, String direction){
+    private void setNewPosition(Point newPosition, String direction) {
         if (newPosition != null) {
             moveLog(direction, getPosition().getX(), getPosition().getY(),
                     newPosition.getX(), newPosition.getY());
@@ -81,15 +81,15 @@ public class Girl extends AbstractGameObject implements Movable {
         }
         wasActedOnTick = true;
         bombCapacity--;
-        int x = getPosition().getX() / 32;
-        int y = getPosition().getY() / 32;
-        if(getPosition().getX() % 32 > 16) {
-            x++;
+        int pointX = getPosition().getX() / 32;
+        int pointY = getPosition().getY() / 32;
+        if (getPosition().getX() % 32 > 16) {
+            pointX++;
         }
-        if(getPosition().getY() % 32 > 16) {
-            y++;
+        if (getPosition().getY() % 32 > 16) {
+            pointY++;
         }
-        Point bombPosition = new Point(x * 32, y * 32);
+        Point bombPosition = new Point(pointX * 32, pointY * 32);
         bombForPlant = new Bomb(bombPosition, this, rangeOfExplosion);
     }
 
