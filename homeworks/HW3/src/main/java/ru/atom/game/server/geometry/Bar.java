@@ -2,6 +2,8 @@ package ru.atom.game.server.geometry;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import static ru.atom.game.server.model.GameSession.TILE_SIZE;
+
 public class Bar implements Collider {
     private final Point startPoint;
     private final Point endPoint;
@@ -10,6 +12,7 @@ public class Bar implements Collider {
         startPoint = new Point(Math.min(x1, x2), Math.min(y1, y2));
         endPoint = new Point(Math.max(x1, x2), Math.max(y1, y2));
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -24,14 +27,14 @@ public class Bar implements Collider {
 
     @Override
     public boolean isColliding(Collider other) {
-        return isIncludes(other) || isIntersects(other);
+        return isIncludes(other) /*|| isIntersects(other)*/;
     }
 
     public boolean isIncludes(Collider collider) {
         if (collider instanceof Bar) {
             Bar bar = (Bar) collider;
-            if (bar.startPoint.getX() >= this.startPoint.getX() && bar.startPoint.getY() >= this.startPoint.getY()
-                    && bar.endPoint.getX() <= this.endPoint.getX() && bar.endPoint.getY() <= this.endPoint.getY()) {
+            if (bar.startPoint.getX() > this.startPoint.getX() && bar.startPoint.getY() > this.startPoint.getY()
+                    && bar.endPoint.getX() < this.endPoint.getX() && bar.endPoint.getY() < this.endPoint.getY()) {
                 return true;
             }
             return false;
@@ -65,5 +68,13 @@ public class Bar implements Collider {
             return false;
         }
         throw new NotImplementedException();
+    }
+
+    public static Bar getUpBar(Bar bar) {
+        int x1 = bar.startPoint.getX();
+        int y1 = bar.startPoint.getY() + 1;
+        int x2 = x1;
+        int y2 = bar.endPoint.getY() + 1;
+        return new Bar(x1, y1, x2, y2);
     }
 }

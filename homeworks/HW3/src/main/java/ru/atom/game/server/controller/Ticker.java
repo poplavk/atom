@@ -8,6 +8,8 @@ import ru.atom.dbhackaton.server.service.MatchMakerService;
 import ru.atom.game.server.message.Topic;
 import ru.atom.game.server.model.GameObject;
 import ru.atom.game.server.model.GameSession;
+import ru.atom.game.server.model.Girl;
+import ru.atom.game.server.model.Movable;
 import ru.atom.game.server.network.Broker;
 
 import java.util.HashMap;
@@ -109,5 +111,9 @@ public class Ticker implements Runnable {
         while (!Thread.currentThread().isInterrupted()) {
             tick(); //todo handle game over
         }
+    }
+
+    public void move(Girl girl, Movable.Direction direction) {
+        gameSession.move(girl, direction);
     }
 }

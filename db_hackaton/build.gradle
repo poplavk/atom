@@ -13,10 +13,10 @@ dependencies {
     compile group: 'com.squareup.okio', name: 'okio', version: '1.0.0'
 }
 
-jar {
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest { attributes 'Main-Class': 'ru.atom.http.server.HttpServer' }
-}
+//jar {
+//    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//    manifest { attributes 'Main-Class': 'ru.atom.http.server.HttpServer' }
+//}
 
 
 sourceSets {

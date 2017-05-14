@@ -47,6 +47,7 @@ public class Girl extends AbstractGameObject implements Movable {
         if (wasActedOnTick)
             return getPosition();
         wasActedOnTick = true;
+        int speed = 1;
 
         Point newPosition = null;
         String directionString = "IDLE";
@@ -105,4 +106,10 @@ public class Girl extends AbstractGameObject implements Movable {
     public Bomb getBombForPlant() {
         return bombForPlant;
     }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+
 }

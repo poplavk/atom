@@ -2,6 +2,7 @@ package ru.atom.game.server.model;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.game.server.geometry.Bar;
 import ru.atom.game.server.geometry.Point;
 
 
@@ -151,5 +152,41 @@ public class GameSession implements Tickable {
 
         gameObjects.removeAll(dead);
         gameObjects.addAll(newObjects);
+    }
+
+    //девочка стоит на месте пока. что-то не то с коллизиями надо думать
+    public void move(Girl girl, Movable.Direction direction) {
+        List<Bar> track = getTrack(girl.getSpeed(), girl.getBar(), direction);
+
+        for (Bar bar : track) {
+            for (GameObject gameObject : gameObjects) {
+                if (!(gameObject instanceof Girl)) {
+                    if (gameObject instanceof AbstractGameObject) {
+                        boolean colliding = ((AbstractGameObject) gameObject).getBar().isColliding(bar);
+                        if (colliding) {
+                            return;
+                        }
+                    }
+                }
+            }
+            girl.move(direction);
+        }
+    }
+
+    private List<Bar> getTrack(int speed, Bar position, Movable.Direction direction) {
+        List<Bar> track = new ArrayList<>();
+        Bar bar = position;
+        for (int i = 1; i <= speed; i++) {
+            switch (direction) {
+                case UP:
+                    bar = Bar.getUpBar(bar);
+                    track.add(bar);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return track;
+
     }
 }

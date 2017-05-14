@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.game.server.geometry.Bar;
 import ru.atom.game.server.geometry.Point;
+
+import static ru.atom.game.server.model.GameSession.TILE_SIZE;
 
 
 public abstract class AbstractGameObject implements Positionable {
@@ -13,12 +16,16 @@ public abstract class AbstractGameObject implements Positionable {
     private final int id;
     private Point position;
     private final String type;
+    private Bar bar;
 
     @JsonCreator
     public AbstractGameObject(@JsonProperty("position") Point point, @JsonProperty("type") String clsName) {
         this.id = GameSession.getNextId();
         this.position = point;
         this.type = clsName;
+        int x = point.getX();
+        int y = point.getY();
+        this.bar = new Bar(x, y, x + TILE_SIZE, y + TILE_SIZE);
     }
 
     public int getId() {
@@ -27,6 +34,10 @@ public abstract class AbstractGameObject implements Positionable {
 
     public Point getPosition() {
         return position;
+    }
+
+    public Bar getBar() {
+        return bar;
     }
 
     @Override
@@ -50,10 +61,14 @@ public abstract class AbstractGameObject implements Positionable {
     }
 
     public void setPosition(Point newPosition) {
+
         position = newPosition;
+
     }
 
     public String getType() {
         return type;
     }
+
+
 }

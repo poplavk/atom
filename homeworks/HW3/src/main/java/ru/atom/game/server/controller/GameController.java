@@ -9,6 +9,7 @@ import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
 import ru.atom.game.server.model.GameSession;
 import ru.atom.game.server.model.Girl;
+import ru.atom.game.server.model.Movable;
 import ru.atom.game.server.util.JsonHelper;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class GameController {
 
     private final ConcurrentHashMap<String, Girl> playerToGirl = new ConcurrentHashMap<>();
     private final List<Ticker> tickers = new CopyOnWriteArrayList<>();
+    private final ConcurrentHashMap<Girl, Ticker> girlToTicker = new ConcurrentHashMap<>();
 
     private static final Object lock = new Object();
 
@@ -40,6 +42,7 @@ public class GameController {
             Girl girl = new Girl(new Point(GameSession.TILE_SIZE,GameSession.TILE_SIZE)); //TODO remake it
             if (playerToGirl.putIfAbsent(player, girl) == null) {
                 ticker.addPlayer(girl, player);
+                girlToTicker.put(girl, ticker);
                 return true;
             }
         }
@@ -83,13 +86,15 @@ public class GameController {
             log.warn("try to do something with null girl");
             return;
         }
+        Ticker ticker = girlToTicker.get(girl);
         Topic topic = msg.getTopic();
         String json = msg.getData();
         log.info("msg.data: {}", json);
         if (topic == Topic.MOVE) {
             DirectionMsg directionMsg = JsonHelper.fromJson(json, DirectionMsg.class);
             // TODO: 5/13/17 move в тике?????
-            girl.move(directionMsg.getDirection());
+            ticker.move(girl, directionMsg.getDirection());
+//            girl.move(directionMsg.getDirection());
             return;
         }
         if (topic == Topic.PLANT_BOMB) {
@@ -97,6 +102,7 @@ public class GameController {
             return;
         }
     }
+
 
     public List<Ticker> getTickers() {
         return tickers;
