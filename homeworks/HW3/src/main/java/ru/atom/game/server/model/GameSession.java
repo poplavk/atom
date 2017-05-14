@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameSession implements Tickable {
-    private static final Logger logger = LogManager.getLogger(ru.atom.dbhackaton.server.mm.GameSession.class);
+    private static final Logger logger = LogManager.getLogger(ru.atom.server.mm.GameSession.class);
 
     public static final int TILE_SIZE = 32;
     public static final int TILES_X = 17;

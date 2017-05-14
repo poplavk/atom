@@ -34,7 +34,5 @@
         <!--mapping-->
         <mapping class="ru.atom.server.base.User"/>
         <mapping class="ru.atom.server.base.Token"/>
-        <mapping class="ru.atom.server.base.Match"/>
-        <mapping class="ru.atom.server.base.PersonalResult"/>
     </session-factory>
 </hibernate-configuration>

@@ -3,3 +3,6 @@ include 'homeworks/HW1'
 include 'homeworks/HW3'
 
 include 'bomberman/frontend'
+include 'auth-server'
+include 'db_hackaton'
+
