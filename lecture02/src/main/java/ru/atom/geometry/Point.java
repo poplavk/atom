@@ -1,4 +1,4 @@
-package ru.atom.geometry;
+package ru.atom.game.server.geometry;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 

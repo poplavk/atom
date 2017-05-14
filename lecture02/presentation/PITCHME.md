@@ -613,12 +613,12 @@ Interfaces are allowed.
 #HSLIDE
 ### All together now
 ```java
-package ru.atom.model.object.actor;
+package ru.atom.game.server.model.object.actor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.atom.model.object.GameObject;
-import ru.atom.util.V;
+import ru.atom.game.server.model.object.GameObject;
+import ru.atom.game.server.util.V;
 
 public class Actor extends GameObject implements Tickable {
     private final static Logger log = LogManager.getLogger(Actor.class);
@@ -685,7 +685,7 @@ final class Message {
 
 #HSLIDE
 ### Practice
-@See ru.atom.geometry
+@See ru.atom.game.server.geometry
 
 <img src="lecture02/presentation/assets/img/geometry.png" alt="geometry" style="width: 750px;"/>
 

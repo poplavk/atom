@@ -1,10 +1,10 @@
 package ru.atom;
 
-import ru.atom.model.Bomb;
-import ru.atom.model.Brick;
-import ru.atom.model.GameSession;
-import ru.atom.model.Girl;
-import ru.atom.model.Bonus;
+import ru.atom.game.server.model.Bomb;
+import ru.atom.game.server.model.Brick;
+import ru.atom.game.server.model.GameSession;
+import ru.atom.game.server.model.Girl;
+import ru.atom.game.server.model.Bonus;
 
 /**
  * Create sample game session with all kinds of objects that will present in bomber-man game

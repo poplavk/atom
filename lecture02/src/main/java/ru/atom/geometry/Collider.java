@@ -1,4 +1,4 @@
-package ru.atom.geometry;
+package ru.atom.game.server.geometry;
 
 /**
  * Entity that can physically intersect, like flame and player

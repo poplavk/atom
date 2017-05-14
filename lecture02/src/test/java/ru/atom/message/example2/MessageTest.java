@@ -1,4 +1,4 @@
-package ru.atom.message.example2;
+package ru.atom.game.server.message.example2;
 
 import org.junit.Test;
 

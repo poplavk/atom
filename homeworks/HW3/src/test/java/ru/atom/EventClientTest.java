@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import ru.atom.event.EventClient;
-import ru.atom.model.Movable.Direction;
+import ru.atom.game.server.event.EventClient;
+import ru.atom.game.server.model.Movable.Direction;
 
 
 /**
