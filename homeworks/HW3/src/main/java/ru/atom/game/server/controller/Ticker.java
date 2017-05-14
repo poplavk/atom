@@ -19,7 +19,7 @@ import java.util.concurrent.locks.LockSupport;
 
 public class Ticker implements Runnable {
     private static final Logger log = LogManager.getLogger(Ticker.class);
-    private static final int FPS = 2;
+    private static final int FPS = 60;
     private static final long FRAME_TIME = 1000 / FPS;
     private long tickNumber = 0;
 

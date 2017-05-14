@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.atom.game.server.geometry.Point;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,18 +39,85 @@ public class GameSession implements Tickable {
 
 
     private void generateMap() {
-//        gameObjects.add(new Wall(new Point(10, 10), Wall.BrickType.UNBREACABLE));
-        //внешние стенки
-        for (int i = 0; i < TILES_Y; i++) {
-            gameObjects.add(new Wall(new Point(0, i), Wall.BrickType.UNBREACABLE));
-            gameObjects.add(new Wall(new Point(TILES_X - 1, i), Wall.BrickType.UNBREACABLE));
+        generateWalls();
+        generateWoods();
+
+
+    }
+
+    private void generateWoods() {
+        for (int y = 4; y < 9; y++) {
+            for (int x = 1; x < 5; x++) {
+                addWood(x, y);
+            }
+            for (int x = 12; x < 16; x++) {
+                addWood(x, y);
+            }
+        }
+        for (int x = 4; x < 13; x++) {
+            for (int y = 1; y < 3; y++) {
+                addWood(x, y);
+            }
+            for (int y = 10; y < 12; y++) {
+                addWood(x, y);
+            }
+        }
+        for (int x = 6; x < 11; x++) {
+            for (int y = 5; y < 8; y++) {
+                addWood(x, y);
+            }
+        }
+    }
+
+    public void addWall(int x, int y) {
+        gameObjects.add(new Tile(new Point(x, y), Tile.TileType.Wall));
+    }
+
+    public void addWood(int x, int y) {
+        gameObjects.add(new Tile(new Point(x, y), Tile.TileType.Wood));
+    }
+
+    public void generateWalls() {
+        for (int y = 0; y < TILES_Y; y++) {
+            addWall(0, y);
+            addWall(TILES_X - 1, y);
 
         }
-        for (int i = 0; i < TILES_X; i++) {
-            gameObjects.add(new Wall(new Point(i, 0), Wall.BrickType.UNBREACABLE));
-            gameObjects.add(new Wall(new Point(i, TILES_Y - 1), Wall.BrickType.UNBREACABLE));
+        for (int x = 0; x < TILES_X; x++) {
+            addWall(x, 0);
+            addWall(x, TILES_Y - 1);
         }
-        // TODO add map generator
+
+        addWall(2, 2);
+        addWall(2, 3);
+        addWall(3, 2);
+
+        addWall(2, 10);
+        addWall(2, 9);
+        addWall(3, 10);
+
+        addWall(14, 10);
+        addWall(13, 10);
+        addWall(14, 9);
+
+        addWall(14, 2);
+        addWall(13, 2);
+        addWall(14, 3);
+
+        addWall(8, 3);
+        addWall(8, 4);
+
+        addWall(8, 8);
+        addWall(8, 9);
+
+        addWall(5, 7);
+        addWall(5, 6);
+        addWall(5, 5);
+
+        addWall(11, 7);
+        addWall(11, 6);
+        addWall(11, 5);
+
     }
 
 
