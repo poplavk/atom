@@ -21,18 +21,14 @@ public class GameSession implements Tickable {
 
     //    private ConcurrentHashMap<Point, GameObject> canvas = new ConcurrentHashMap<>();
 
-    private static ThreadLocal<Integer> lastId = new ThreadLocal<>();
+    private static int lastId = 0 ;
 
     public GameSession() {
-        lastId.set(0);
         generateMap();
     }
 
     public static int getNextId() {
-        int id = lastId.get();
-        id++;
-        lastId.set(id);
-        return id;
+        return lastId++;
     }
 
     public List<GameObject> getGameObjects() {

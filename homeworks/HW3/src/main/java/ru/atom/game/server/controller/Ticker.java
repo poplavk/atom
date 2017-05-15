@@ -114,8 +114,8 @@ public class Ticker implements Runnable {
         tickNumber++;
 
         //TODO add normal game over
-        //return tickNumber <= 1000;
-        return true;
+        return tickNumber <= 1000000;
+//        return true;
     }
 
     @Override
