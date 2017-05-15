@@ -4,12 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.atom.auth.server.service.AuthService;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -96,8 +91,13 @@ public class AuthResource {
         return Response.status(Response.Status.BAD_REQUEST).entity("Неудачная попытка входа").build();
     }
 
+    @Authorized
+    @GET
+    @Path("/is-logined")
+    public Response isLogined() {
+        return Response.status(Response.Status.OK).build();
+    }
 
-    // TODO: 4/14/17  запилить логаут
     @Authorized
     @POST
     @Consumes("application/x-www-form-urlencoded")
@@ -121,7 +121,6 @@ public class AuthResource {
         }
         return (password.length() < MIN_PASSWORD_LEN || password.length() > MAX_PASSWORD_LEN);
     }
-
 
 
 }
