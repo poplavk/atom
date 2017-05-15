@@ -32,9 +32,9 @@
         <property name="hibernate.current_session_context_class">thread</property>
 
         <!--mapping-->
-        <mapping class="User"/>
-        <mapping class="Token"/>
-        <mapping class="Match"/>
-        <mapping class="PersonalResult"/>
+        <mapping class="ru.atom.auth.server.base.User"/>
+        <mapping class="ru.atom.auth.server.base.Token"/>
+        <mapping class="ru.atom.auth.server.base.Match"/>
+        <mapping class="ru.atom.auth.server.base.PersonalResult"/>
     </session-factory>
 </hibernate-configuration>

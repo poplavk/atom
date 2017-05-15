@@ -1,5 +1,5 @@
 rootProject.name = 'atom'
-include 'homeworks/HW1'
+include 'auth_server'
 include 'homeworks/HW3'
 
 include 'bomberman/frontend'
