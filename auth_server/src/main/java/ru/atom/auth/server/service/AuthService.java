@@ -80,7 +80,6 @@ public class AuthService {
             if (token == null) {
                 String newValueToken = generateToken();
                 // TODO: 4/14/17 проверить уникальность сгенерированного токена
-//                boolean isChecked = TokenDao.getInstance().checkUnoqueToken(session, newValueToken);
                 token = new Token(newValueToken, user);
                 TokenDao.getInstance().insert(session, token);
             }

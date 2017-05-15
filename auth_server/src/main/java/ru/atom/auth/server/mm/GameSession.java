@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class GameSession {
     private static final Logger logger = LogManager.getLogger(GameSession.class);
 
-//    private static AtomicLong idGenerator = new AtomicLong();
+    //    private static AtomicLong idGenerator = new AtomicLong();
 
     public static final int PLAYERS_IN_GAME = 4;
 
@@ -31,7 +31,7 @@ public class GameSession {
         return id;
     }
 
-    public void sendIdToConnections(){
+    public void sendIdToConnections() {
         for (Connection connection: connections) {
             connection.setSessionId(id);
         }

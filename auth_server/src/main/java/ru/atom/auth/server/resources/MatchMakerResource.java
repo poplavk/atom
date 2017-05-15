@@ -1,7 +1,7 @@
 package ru.atom.auth.server.resources;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;;
+import org.apache.logging.log4j.Logger;
 import ru.atom.auth.server.service.MatchMakerService;
 
 import javax.ws.rs.Consumes;
@@ -19,7 +19,6 @@ public class MatchMakerResource {
     private static final Logger logger = LogManager.getLogger(MatchMakerResource.class);
 
     public static MatchMakerService matchMakerService = new MatchMakerService();
-
 
     @GET
     @Consumes("application/x-www-form-urlencoded")
