@@ -8,12 +8,11 @@ import ru.atom.game.server.model.GameObject;
 import ru.atom.game.server.model.GameSession;
 import ru.atom.game.server.network.Broker;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
+import java.util.stream.Collectors;
 
 public class Ticker implements Runnable {
     private static final Logger log = LogManager.getLogger(Ticker.class);
@@ -25,7 +24,9 @@ public class Ticker implements Runnable {
     private final Integer id;
 
     private final Broker broker = Broker.getInstance();
-    private final Set<String> players = new CopyOnWriteArraySet<>();
+    private final GameController gameController = GameController.getInstance();
+
+    private final Set<String> players = new HashSet<>();
     private final HashMap<Integer, String> girlsIdToPlayer = new HashMap<Integer, String>();
 
     private final GameSession gameSession = new GameSession();
@@ -48,14 +49,13 @@ public class Ticker implements Runnable {
 
     public boolean canRestorePlayer(@NotNull String player) {
         if (players.contains(player)) {
-            broker.send(player,
-                    Topic.POSSESS,
-                    girlsIdToPlayer.entrySet().stream()
-                            .filter(entry -> entry.getValue().equals(player))
-                            .map(Map.Entry::getKey)
-                            .findFirst()
-                            .orElseGet(null));
-            return true;
+            List<Integer> ids = girlsIdToPlayer.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(player))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+            if (!ids.isEmpty()) {
+                broker.send(player, Topic.POSSESS, ids.get(0));
+                return true;
+            }
         }
         return false;
     }
@@ -76,8 +76,23 @@ public class Ticker implements Runnable {
 
     private void act(long time) {
         //Your logic here
+        List<Integer> deadPlayers = new ArrayList<>();
+        //TODO gameSession must return deadPlayers
         gameSession.tick(time);
-        players.forEach(player -> {
+
+        //TODO remove it
+        if (tickNumber == 500) {
+            deadPlayers.addAll(girlsIdToPlayer.keySet());
+        }
+
+
+        deadPlayers.forEach(id -> {
+            String player = girlsIdToPlayer.get(id);
+            girlsIdToPlayer.remove(id);
+            gameController.removePlayer(player);
+        });
+
+        girlsIdToPlayer.values().forEach(player -> {
             broker.send(player, Topic.REPLICA, gameSession.getGameObjects());
         });
     }
@@ -98,7 +113,9 @@ public class Ticker implements Runnable {
         }
         log.info("{}: tick ", tickNumber);
         tickNumber++;
-        return true;
+
+        //TODO add normal game over
+        return tickNumber <= 1000;
     }
 
     @Override
@@ -108,7 +125,11 @@ public class Ticker implements Runnable {
         });
 
         while (!Thread.currentThread().isInterrupted()) {
-            tick(); //todo handle game over
+            if (!tick()) {
+                Thread.currentThread().interrupt();
+                gameController.removeTicker(this);
+                girlsIdToPlayer.values().forEach(gameController::removePlayer);
+            }
         }
     }
 }
