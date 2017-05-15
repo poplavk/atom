@@ -8,7 +8,7 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import ru.atom.auth.server.CrossBrowserFilter;
+import ru.atom.game.server.CrossBrowserFilter;
 
 public class EventServer {
     public static Server server;

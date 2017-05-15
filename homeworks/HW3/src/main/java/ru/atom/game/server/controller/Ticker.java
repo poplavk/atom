@@ -3,8 +3,6 @@ package ru.atom.game.server.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import ru.atom.auth.server.base.Match;
-import ru.atom.auth.server.service.MatchMakerService;
 import ru.atom.game.server.message.Topic;
 import ru.atom.game.server.model.GameObject;
 import ru.atom.game.server.model.GameSession;
@@ -34,7 +32,10 @@ public class Ticker implements Runnable {
 
 
     public Ticker() {
-        this.id = MatchMakerService.saveMatch(new Match());
+        //TODO add save info to db
+        //        this.id = MatchMakerService.saveMatch(new Match());
+        this.id = 0;
+
     }
 
     public long getId() {

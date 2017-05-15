@@ -1,4 +1,4 @@
-package ru.atom.auth.server;
+package ru.atom.game.server;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
