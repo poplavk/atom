@@ -25,7 +25,7 @@ public class EventServer {
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         context.setContextPath("/");
         contexts.setHandlers(new Handler[]{
-                createResourceContext(), context
+                context
         });
         server.setHandler(contexts);
 
@@ -40,40 +40,6 @@ public class EventServer {
         } catch (Throwable t) {
             t.printStackTrace(System.err);
         }
-    }
-
-
-    private static ServletContextHandler createGsContext() {
-        ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/");
-        ServletHolder jerseyServlet = context.addServlet(
-                org.glassfish.jersey.servlet.ServletContainer.class, "/*");
-        jerseyServlet.setInitOrder(0);
-
-        jerseyServlet.setInitParameter(
-                "jersey.config.server.provider.packages",
-                "ru.atom.bombergirl.gameserver"
-        );
-
-        jerseyServlet.setInitParameter(
-                "com.sun.jersey.spi.container.ContainerResponseFilters",
-                CrossBrowserFilter.class.getCanonicalName()
-        );
-
-        return context;
-    }
-
-    private static ContextHandler createResourceContext() {
-        ContextHandler context = new ContextHandler();
-        context.setContextPath("/gs/0/*");
-        ResourceHandler handler = new ResourceHandler();
-        String eventRoot = EventServer.class.getResource("/static").toString();
-        //String serverRoot = eventRoot.substring(0, eventRoot.length() - 35) + "frontend/src/main/webapp";
-        String serverRoot = "./bomberman/frontend/src/main/webapp";
-        handler.setWelcomeFiles(new String[]{serverRoot + "index.html"});
-        handler.setResourceBase(serverRoot);
-        context.setHandler(handler);
-        return context;
     }
 
     public static void main(String[] args) {
