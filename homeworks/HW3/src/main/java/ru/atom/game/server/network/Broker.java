@@ -53,14 +53,14 @@ public class Broker {
         String message = JsonHelper.toJson(new Message(topic, object));
         Session session = connectionPool.getSession(player);
         if (session != null) {
-            log.info("msg to {}: {}", player, message);
+            log.debug("msg to {}: {}", player, message);
             connectionPool.send(session, message);
         }
     }
 
     public void broadcast(@NotNull Topic topic, @NotNull Object object) {
         String message = JsonHelper.toJson(new Message(topic, object));
-        log.info("broadcast: {}", message);
+        log.debug("broadcast: {}", message);
         connectionPool.broadcast(message);
     }
 

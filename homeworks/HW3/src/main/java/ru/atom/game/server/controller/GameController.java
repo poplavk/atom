@@ -9,9 +9,11 @@ import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
 import ru.atom.game.server.model.GameSession;
 import ru.atom.game.server.model.Girl;
-import ru.atom.game.server.model.Movable;
+
+import ru.atom.game.server.network.Broker;
 import ru.atom.game.server.util.JsonHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -23,14 +25,17 @@ public class GameController {
     private static final Logger log = LogManager.getLogger(GameController.class);
 
     private final ConcurrentHashMap<String, Girl> playerToGirl = new ConcurrentHashMap<>();
-    private final List<Ticker> tickers = new CopyOnWriteArrayList<>();
     private final ConcurrentHashMap<Girl, Ticker> girlToTicker = new ConcurrentHashMap<>();
+    private final List<Ticker> tickers = new ArrayList<>();
 
     private static final Object lock = new Object();
 
-    //TODO maybe make it singleton?
+    private static final GameController instance = new GameController();
+
+
+
     public static GameController getInstance() {
-        return new GameController();
+        return instance;
     }
 
     public GameController() {
@@ -106,6 +111,19 @@ public class GameController {
 
     public List<Ticker> getTickers() {
         return tickers;
+    }
+
+    public void removeTicker(Ticker ticker) {
+        synchronized (lock) {
+            tickers.remove(ticker);
+        }
+        log.info("Ticker was removed");
+    }
+
+    public void removePlayer(String player) {
+        playerToGirl.remove(player);
+        log.info("remove player: {}", player);
+        Broker.getInstance().send(player, Topic.END_MATCH, "");
     }
 
 }

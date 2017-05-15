@@ -1,12 +1,6 @@
 dependencies {
+    testCompile rootProject.libraries.junit
     compile rootProject.libraries.log4j
-    testCompile rootProject.libraries.junit
-    compile rootProject.libraries.jackson
-    compile rootProject.libraries.jetbrainsAnnotations
-    compile rootProject.libraries.websocketclient
-    compile rootProject.libraries.websocketserver
-    compile rootProject.libraries.websocketapi
-    testCompile rootProject.libraries.junit
     compile rootProject.libraries.jetty_server
     compile rootProject.libraries.jetty_servlet
     compile rootProject.libraries.jersey_server
@@ -19,9 +13,13 @@ dependencies {
     compile group: 'com.squareup.okio', name: 'okio', version: '1.0.0'
 }
 
+//jar {
+//    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//    manifest { attributes 'Main-Class': 'ru.atom.http.server.HttpServer' }
+//}
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest { attributes 'Main-Class': 'ru.atom.game.server.event.EventServer' }
+    manifest { attributes 'Main-Class': 'ru.atom.auth.server.AuthServer' }
 }
 
 sourceSets {
