@@ -81,11 +81,10 @@ public class Ticker implements Runnable {
         gameSession.tick(time);
 
         //TODO remove it
-        if (tickNumber == 500) {
-            deadPlayers.addAll(girlsIdToPlayer.keySet());
-        }
-
-
+        //if (tickNumber == 500) {
+        //    deadPlayers.addAll(girlsIdToPlayer.keySet());
+        //}
+        
         deadPlayers.forEach(id -> {
             String player = girlsIdToPlayer.get(id);
             girlsIdToPlayer.remove(id);
@@ -115,7 +114,8 @@ public class Ticker implements Runnable {
         tickNumber++;
 
         //TODO add normal game over
-        return tickNumber <= 1000;
+        //return tickNumber <= 1000;
+        return true;
     }
 
     @Override
@@ -124,12 +124,10 @@ public class Ticker implements Runnable {
             broker.send(player, Topic.POSSESS, id);
         });
 
-        while (!Thread.currentThread().isInterrupted()) {
-            if (!tick()) {
-                Thread.currentThread().interrupt();
-                gameController.removeTicker(this);
-                girlsIdToPlayer.values().forEach(gameController::removePlayer);
-            }
+        while (tick()) {
+
         }
+        gameController.removeTicker(this);
+        girlsIdToPlayer.values().forEach(gameController::removePlayer);
     }
 }

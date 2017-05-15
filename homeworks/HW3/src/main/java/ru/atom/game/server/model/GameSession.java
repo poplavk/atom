@@ -21,11 +21,18 @@ public class GameSession implements Tickable {
 
     //    private ConcurrentHashMap<Point, GameObject> canvas = new ConcurrentHashMap<>();
 
-    private static int lastId = 0;
+    private static ThreadLocal<Integer> lastId = new ThreadLocal<>();
 
-    //TODO мне ненравится
+    public GameSession() {
+        lastId.set(0);
+        generateMap();
+    }
+
     public static int getNextId() {
-        return lastId++;
+        int id = lastId.get();
+        id++;
+        lastId.set(id);
+        return id;
     }
 
     public List<GameObject> getGameObjects() {
@@ -118,11 +125,6 @@ public class GameSession implements Tickable {
         addWall(11, 6);
         addWall(11, 5);
 
-    }
-
-
-    public GameSession() {
-        generateMap();
     }
 
     @Override
