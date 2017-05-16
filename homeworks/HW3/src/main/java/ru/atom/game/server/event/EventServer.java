@@ -24,9 +24,7 @@ public class EventServer {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         context.setContextPath("/");
-        contexts.setHandlers(new Handler[]{
-                context
-        });
+        contexts.setHandlers(new Handler[]{ context });
         server.setHandler(contexts);
 
         // Add a websocket to a specific path spec

@@ -8,8 +8,12 @@ import ru.atom.game.server.model.GameObject;
 import ru.atom.game.server.model.GameSession;
 import ru.atom.game.server.network.Broker;
 
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
@@ -115,7 +119,6 @@ public class Ticker implements Runnable {
 
         //TODO add normal game over
         return tickNumber <= 1000000;
-//        return true;
     }
 
     @Override

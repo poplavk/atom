@@ -28,13 +28,16 @@ Messages = Class.extend({
         return JSON.stringify(template);
     },
 
-    hello: function (name) {
+    hello: function (nameStr, tokenStr) {
         var template = {
             topic: "HELLO",
-            data: {}
+            data: {
+                name: nameStr,
+                token: tokenStr
+            }
         };
 
-        template.data = name;
+//        template.data = name;
         return JSON.stringify(template);
     },
 

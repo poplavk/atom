@@ -18,6 +18,8 @@ public class Message {
                 this.data = JsonHelper.getJsonNode(JsonHelper.toJson(data));
                 break;
             case HELLO:
+                this.data = JsonHelper.getJsonNode(JsonHelper.toJson(data));
+                break;
             case POSSESS:
                 this.data = data.toString();
                 break;

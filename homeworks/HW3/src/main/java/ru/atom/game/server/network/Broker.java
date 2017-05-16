@@ -6,6 +6,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import ru.atom.game.server.communication.AuthClient;
 import ru.atom.game.server.controller.GameController;
+import ru.atom.game.server.message.HelloDataMsg;
 import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
 import ru.atom.game.server.util.JsonHelper;
@@ -73,11 +74,14 @@ public class Broker {
     }
 
     private void onMsgHello(Message message, Session session) {
-        String player = message.getData();
+        HelloDataMsg msg = JsonHelper.fromJson(message.getData(), HelloDataMsg.class);
+        String player = msg.getUser();
+        String token = msg.getToken();
+
         boolean isInvalidToken = true;
         String errorMsg = "";
         try {
-            okhttp3.Response response = AuthClient.isLogined("-9190499099843723714");
+            okhttp3.Response response = AuthClient.isLogined(token);
             if (response.code() == 200) {
                 isInvalidToken = false;
             } else {
