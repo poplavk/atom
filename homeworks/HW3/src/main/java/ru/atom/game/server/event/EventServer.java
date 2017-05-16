@@ -1,6 +1,7 @@
 package ru.atom.game.server.event;
 
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -9,6 +10,9 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import ru.atom.game.server.CrossBrowserFilter;
+import ru.atom.game.server.communication.MatchMakerClient;
+
+import java.io.IOException;
 
 public class EventServer {
     public static Server server;
@@ -30,6 +34,19 @@ public class EventServer {
         // Add a websocket to a specific path spec
         ServletHolder holderEvents = new ServletHolder("ws-events", EventServlet.class);
         context.addServlet(holderEvents, "/events/*");
+
+        okhttp3.Response response = null;
+        try {
+             response = MatchMakerClient.loginServer("superadmin", "mephirulitNO");
+             if (response.code() == 200) {
+                MatchMakerClient.setServerToken(response.message());
+             } else {
+                 return;
+             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
 
         try {
             server.start();

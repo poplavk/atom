@@ -2,6 +2,7 @@ package ru.atom.game.server.network;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +30,12 @@ public class ConnectionPool {
     public void send(@NotNull Session session, @NotNull String msg) {
         if (session.isOpen()) {
             try {
-                session.getRemote().sendString(msg);
+                RemoteEndpoint remote = session.getRemote();
+                if (remote != null) {
+                    remote.sendString(msg);
+                }
             } catch (IOException ignored) {
+                log.error(ignored.getMessage());
             }
         }
     }

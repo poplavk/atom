@@ -4,14 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
-import ru.atom.game.server.communication.AuthClient;
+import ru.atom.game.server.communication.MatchMakerClient;
 import ru.atom.game.server.controller.GameController;
 import ru.atom.game.server.message.HelloDataMsg;
 import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
 import ru.atom.game.server.util.JsonHelper;
 
-import java.awt.datatransfer.Clipboard;
 import java.io.IOException;
 
 
@@ -53,11 +52,13 @@ public class Broker {
 
     public void send(@NotNull String player, @NotNull Topic topic, @NotNull Object object) {
         String message = JsonHelper.toJson(new Message(topic, object));
+
         Session session = connectionPool.getSession(player);
         if (session != null) {
             log.debug("msg to {}: {}", player, message);
             connectionPool.send(session, message);
         }
+
     }
 
     public void send(@NotNull Session session, @NotNull Topic topic, @NotNull Object object) {
@@ -81,7 +82,7 @@ public class Broker {
         boolean isInvalidToken = true;
         String errorMsg = "";
         try {
-            okhttp3.Response response = AuthClient.isLogined(token);
+            okhttp3.Response response = MatchMakerClient.isUserLogined(token);
             if (response.code() == 200) {
                 isInvalidToken = false;
             } else {
