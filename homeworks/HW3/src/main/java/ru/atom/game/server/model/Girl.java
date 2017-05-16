@@ -14,7 +14,7 @@ public class Girl extends AbstractGameObject implements Movable, Mortal {
 
     // TODO: 4/30/17 добавить имя игрока?
 
-    private transient int  speed = 1;
+    private transient int speed = 1;
     private transient int bombCapacity = 1;
     private transient int rangeOfExplosion = 1;
     private transient long passedTimeMillis;
@@ -155,7 +155,9 @@ public class Girl extends AbstractGameObject implements Movable, Mortal {
 
     public synchronized void setDirection(Direction direction) {
         this.nowDirection = direction;
-        logger.error("set direction {}", direction);
+        if (!isDead) {
+            logger.error("set direction {}", direction);
+        }
     }
 
     public Direction getNowDirection() {
@@ -167,7 +169,11 @@ public class Girl extends AbstractGameObject implements Movable, Mortal {
         return isDead;
     }
 
-    public void kill() {
+    public synchronized void kill() {
         isDead = true;
+    }
+
+    public long getPassedTimeMillis() {
+        return passedTimeMillis;
     }
 }

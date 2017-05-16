@@ -31,7 +31,7 @@ public class Ticker implements Runnable {
     private final Set<String> players = new HashSet<>();
     private final HashMap<Integer, String> girlsIdToPlayer = new HashMap<Integer, String>();
 
-    private final GameSession gameSession = new GameSession();
+    private final GameSession gameSession = new GameSession(this);
 
 
     public Ticker() {
@@ -136,4 +136,12 @@ public class Ticker implements Runnable {
 //    public void move(Girl girl, Movable.Direction direction) {
 //        gameSession.move(girl, direction);
 //    }
+
+
+    public synchronized void removePlayers(ArrayList<Girl> girls) {
+        for (Girl girl: girls) {
+            String player = girlsIdToPlayer.get(girl.getId());
+            players.remove(player);
+        }
+    }
 }

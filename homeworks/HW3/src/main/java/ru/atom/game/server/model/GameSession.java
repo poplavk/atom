@@ -1,8 +1,8 @@
 package ru.atom.game.server.model;
 
-import com.sun.jna.platform.win32.WinUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.game.server.controller.Ticker;
 import ru.atom.game.server.geometry.Bar;
 import ru.atom.game.server.geometry.Point;
 
@@ -20,10 +20,16 @@ public class GameSession implements Tickable {
 
     private static final Logger log = LogManager.getLogger(GameSession.class);
     private List<GameObject> gameObjects = new ArrayList<>();
+    private Ticker ticker;
 
     private static int lastId = 0;
 
     public GameSession() {
+        generateMap();
+    }
+
+    public GameSession(Ticker ticker) {
+        this.ticker = ticker;
         generateMap();
     }
 
@@ -123,18 +129,38 @@ public class GameSession implements Tickable {
 
     @Override
     public synchronized void tick(long elapsed) {
-        log.info("tick");
+        log.debug("tick");
         ArrayList<Temporary> dead = new ArrayList<>();
-        ArrayList<Mortal> kill = new ArrayList<>();
+        ArrayList<Tile> deadTile = new ArrayList<>();
+        ArrayList<Girl> deadGirl = new ArrayList<>();
         ArrayList<GameObject> newObjects = new ArrayList<>();
 
         for (GameObject gameObject : gameObjects) {
             if (gameObject instanceof Fire) {
                 Fire fire = (Fire) gameObject;
-                kill.addAll(boom(fire));
-//                if (newDead.size() != 0) {
-//                    dead.addAll(newDead);
-//                }
+                Bar bar = fire.getBar();
+                for (GameObject gameObj : gameObjects) {
+                    if (!(gameObj instanceof Fire)) {
+                        if (gameObj instanceof AbstractGameObject) {
+                            AbstractGameObject abstractGameObject = (AbstractGameObject) gameObj;
+                            double dist = getDistance(bar, abstractGameObject.getBar());
+                            if (dist <= 5) {
+                                if ((abstractGameObject.getType().equals("Pawn"))) {
+                                    ((Girl) gameObj).kill();
+                                    deadGirl.add((Girl) gameObj);
+                                }
+                                if ((abstractGameObject.getType().equals("Wall"))) {
+                                    break;
+                                } else {
+                                    if ((abstractGameObject.getType().equals("Wood"))) {
+                                        ((Tile) gameObj).kill();
+                                        deadTile.add((Tile) gameObj);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             if (gameObject instanceof Girl) {
                 Girl girl = (Girl) gameObject;
@@ -155,14 +181,16 @@ public class GameSession implements Tickable {
                     newObjects.addAll(((Bomb) gameObject).getBlast());
                 }
             }
-//            if (gameObject instanceof Mortal && ((Mortal) gameObject).isDead()){
-//
-//            }
+
         }
 
         gameObjects.removeAll(dead);
-        gameObjects.removeAll(kill);
+        gameObjects.removeAll(deadTile);
+        gameObjects.removeAll(deadGirl);
         gameObjects.addAll(newObjects);
+        if (ticker != null && deadGirl.size() != 0) {
+             ticker.removePlayers(deadGirl);
+        }
     }
 
     public synchronized void move(Girl girl) {
@@ -207,7 +235,6 @@ public class GameSession implements Tickable {
                                 dead.add((Mortal) gameObject);
                             }
                         }
-
                     }
                 }
             }

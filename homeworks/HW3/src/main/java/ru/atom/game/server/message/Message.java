@@ -9,8 +9,6 @@ public class Message {
     private final Topic topic;
     private final Object data;
 
-    // TODO: 4/30/17 продумать вложенную стуктуру data с правильным мапингом в json (пока костыль)
-
     public Message(Topic topic, Object data) {
         this.topic = topic;
         switch (topic) {
