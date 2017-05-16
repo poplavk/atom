@@ -13,6 +13,7 @@ ServerProxy = Class.extend({
     init: function () {
         this.handler['REPLICA'] = gMessages.handleReplica;
         this.handler['POSSESS'] = gMessages.handlePossess;
+        this.handler['END_MATCH'] = gMessages.handleGameOver;
 
         var self = this;
         gInputEngine.subscribe('up', function () {

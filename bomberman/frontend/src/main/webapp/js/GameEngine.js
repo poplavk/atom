@@ -29,6 +29,7 @@ GameEngine = Class.extend({
     soundtrack: null,
 
     serverProxy: null,
+    menu: null,
 
     init: function() {
         this.size = {
@@ -74,7 +75,8 @@ GameEngine = Class.extend({
         createjs.Sound.registerSound("sound/bomb.ogg", "bomb");
         // createjs.Sound.registerSound("sound/game.ogg", "game");
 
-
+        this.menu = new Menu();
+        this.menu.visible = false;
     },
 
     setup: function() {
@@ -183,20 +185,20 @@ GameEngine = Class.extend({
         gGameEngine.stage.update();
     },
 
-    // gameOver: function(status) {
-    //     if (gGameEngine.menu.visible) { return; }
-    //
-    //     if (status == 'win') {
-    //         var winText = "You won!";
-    //         if (gGameEngine.playersCount > 1) {
-    //             var winner = gGameEngine.getWinner();
-    //             winText = winner == 0 ? "Player 1 won!" : "Player 2 won!";
-    //         }
-    //         this.menu.show([{text: winText, color: '#669900'}, {text: ' ;D', color: '#99CC00'}]);
-    //     } else {
-    //         this.menu.show([{text: 'Game Over', color: '#CC0000'}, {text: ' :(', color: '#FF4444'}]);
-    //     }
-    // },
+    gameOver: function(status) {
+        if (gGameEngine.menu.visible) { return; }
+
+        if (status == 'win') {
+            var winText = "You won!";
+            // if (gGameEngine.playersCount > 1) {
+            //     var winner = gGameEngine.getWinner();
+            //     winText = winner == 0 ? "Player 1 won!" : "Player 2 won!";
+            // }
+            this.menu.show([{text: winText, color: '#669900'}, {text: ' ;D', color: '#99CC00'}]);
+        } else {
+            this.menu.show([{text: 'Game Over', color: '#CC0000'}, {text: ' :(', color: '#FF4444'}]);
+        }
+    },
 
     restart: function() {
         // gInputEngine.removeAllListeners();

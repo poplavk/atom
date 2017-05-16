@@ -42,11 +42,7 @@ Messages = Class.extend({
     },
 
     handleReplica: function (msg) {
-
-//        var gameObjects = JSON.parse(msg.data);
         var gameObjects = msg.data;
-//        console.log(msg.data)
-//        var gameObjects = JSON.parse(msg.data).objects;
         console.log(gameObjects)
         var survivors = new Set();
 
@@ -64,6 +60,10 @@ Messages = Class.extend({
 
     handlePossess: function (msg) {
         gInputEngine.possessed = parseInt(msg.data);
+    },
+
+    handleGameOver: function (msg) {
+        gGameEngine.gameOver(msg.data)
     },
 
     handlePawn: function(obj) {

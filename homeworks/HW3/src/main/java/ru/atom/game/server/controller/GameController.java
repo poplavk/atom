@@ -114,10 +114,11 @@ public class GameController {
         log.info("Ticker was removed");
     }
 
-    public void removePlayer(String player) {
+    public void removePlayer(String player, boolean isWinner) {
         playerToGirl.remove(player);
         log.info("remove player: {}", player);
-        Broker.getInstance().send(player, Topic.END_MATCH, "");
+        String status = isWinner ? "win" : "lose";
+        Broker.getInstance().send(player, Topic.END_MATCH, status);
     }
 
 }
