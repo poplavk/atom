@@ -1,7 +1,11 @@
-package ru.atom.auth.server.resources;
+package ru.atom.auth.server.resources.mm;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.auth.server.base.PersonalResult;
+import ru.atom.auth.server.dao.MatchDao;
+import ru.atom.auth.server.dao.PersonalResultDao;
+import ru.atom.auth.server.resources.Authorized;
 import ru.atom.auth.server.service.MatchMakerService;
 
 import javax.ws.rs.Consumes;
@@ -12,6 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 
 @Path("/")
@@ -49,6 +54,22 @@ public class MatchMakerResource {
                     "Сохранение результатов невозможно!").build();
         }
         return Response.status(Response.Status.OK).entity("Игра успешно завершена!").build();
+    }
+
+    @Authorized
+    @GET
+    @Consumes("application/x-www-form-urlencoded")
+    @Path("/get-result")
+    @Produces("text/plain")
+    public Response getResult(@QueryParam("name") String name) {
+        if (name == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("name can not be null").build();
+        }
+        List<PersonalResult> list = matchMakerService.getResults(name);
+        if (list == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Can not get info about user match").build();
+        }
+        return Response.status(Response.Status.OK).entity("Nice!").build();
     }
 
 }

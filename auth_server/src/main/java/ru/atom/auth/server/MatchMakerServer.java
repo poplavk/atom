@@ -8,7 +8,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import ru.atom.auth.server.mm.MatchMaker;
-import ru.atom.auth.server.resources.MatchMakerResource;
+import ru.atom.auth.server.resources.mm.MatchMakerResource;
 import ru.atom.auth.server.storages.Database;
 
 

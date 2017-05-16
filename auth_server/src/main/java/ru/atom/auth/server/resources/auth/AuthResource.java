@@ -1,7 +1,8 @@
-package ru.atom.auth.server.resources;
+package ru.atom.auth.server.resources.auth;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.auth.server.resources.Authorized;
 import ru.atom.auth.server.service.AuthService;
 
 import javax.ws.rs.Consumes;

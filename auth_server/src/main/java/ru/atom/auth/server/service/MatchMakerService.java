@@ -20,6 +20,7 @@ import ru.atom.auth.server.dao.UserDao;
 import ru.atom.auth.server.mm.Connection;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -119,7 +120,22 @@ public class MatchMakerService {
             }
         }
         return match.getId();
+    }
 
+    public List<PersonalResult> getResults(String name) {
+        List<PersonalResult> list = null;
+        Transaction txn = null;
+        try (Session session = Database.session()) {
+            txn = session.beginTransaction();
+            list = PersonalResultDao.getInstance().getByUsername(session, name);
+            txn.commit();
+        } catch (RuntimeException ex) {
+            logger.error("Error get user match information!");
+            if (txn != null && txn.isActive()) {
+                txn.rollback();
+            }
+        }
+        return list;
     }
 
 }
