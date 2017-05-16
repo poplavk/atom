@@ -2,10 +2,14 @@ package ru.atom.game.server.model;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.atom.game.server.geometry.Bar;
 import ru.atom.game.server.geometry.Point;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class Girl extends AbstractGameObject implements Movable {
+
+public class Girl extends AbstractGameObject implements Movable, Mortal {
     private static final Logger logger = LogManager.getLogger(Girl.class);
 
     // TODO: 4/30/17 добавить имя игрока?
@@ -14,10 +18,13 @@ public class Girl extends AbstractGameObject implements Movable {
     private transient int bombCapacity = 1;
     private transient int rangeOfExplosion = 1;
     private transient long passedTimeMillis;
+    private transient boolean isDead = false;
 
     //TODO  переделать это на зависимость от времени
     private transient boolean wasActedOnTick = false;
     private transient Bomb bombForPlant = null;
+
+    private transient Direction nowDirection = Direction.IDLE;
 
     public Girl(Point point) {
         super(point, "Pawn");
@@ -32,14 +39,17 @@ public class Girl extends AbstractGameObject implements Movable {
     }
 
 
-    private void setNewPosition(Point newPosition, String direction) {
+    private void setNewPosition(Point newPosition) {
         if (newPosition != null) {
-            moveLog(direction, getPosition().getX(), getPosition().getY(),
+            moveLog(nowDirection, getPosition().getX(), getPosition().getY(),
                     newPosition.getX(), newPosition.getY());
             setPosition(newPosition);
         }
     }
 
+    public synchronized void move(Bar bar) {
+        setNewPosition(bar.getStartPoint());
+    }
 
     @Override
     public synchronized Point move(Direction direction) {
@@ -50,29 +60,29 @@ public class Girl extends AbstractGameObject implements Movable {
         int speed = 1;
 
         Point newPosition = null;
-        String directionString = "IDLE";
-        switch (direction) {
+        switch (nowDirection) {
             case UP:
                 newPosition = new Point(getPosition().getX(), getPosition().getY() + speed);
-                directionString = "UP";
+//                nowDirection = Direction.UP;
                 break;
             case DOWN:
                 newPosition = new Point(getPosition().getX(), getPosition().getY() - speed);
-                directionString = "DOWN";
+//                nowDirection = Direction.DOWN;
                 break;
             case RIGHT:
                 newPosition = new Point(getPosition().getX() + speed, getPosition().getY());
-                directionString = "RIGHT";
+//                nowDirection = Direction.RIGHT;
                 break;
             case LEFT:
                 newPosition = new Point(getPosition().getX() - speed, getPosition().getY());
-                directionString = "LEFT";
+//                nowDirection = Direction.LEFT;
                 break;
             case IDLE:
+                break;
             default:
                 break;
         }
-        setNewPosition(newPosition, directionString);
+        setNewPosition(newPosition);
         return getPosition();
     }
 
@@ -98,8 +108,8 @@ public class Girl extends AbstractGameObject implements Movable {
         bombCapacity++;
     }
 
-    private void moveLog(String direction, int oldX, int oldY, int x, int y) {
-        logger.info("Girl id = {} moved {}! ({}, {}) -> ({}, {})",
+    private void moveLog(Direction direction, int oldX, int oldY, int x, int y) {
+        logger.error("Girl id = {} moved {}! ({}, {}) -> ({}, {})",
                 getId(), direction, oldX, oldY, x, y);
     }
 
@@ -111,5 +121,53 @@ public class Girl extends AbstractGameObject implements Movable {
         return speed;
     }
 
+    public static List<Bar> getTrack(int speed, Bar position, Movable.Direction direction) {
+        List<Bar> track = new ArrayList<>();
+        Bar bar = position;
+        for (int i = 1; i <= speed; i++) {
+            switch (direction) {
+                case UP:
+                    bar = Bar.getUpBar(bar);
+                    track.add(bar);
+                    break;
+                case DOWN:
+                    bar = Bar.getDownBar(bar);
+                    track.add(bar);
+                    break;
+                case RIGHT:
+                    bar = Bar.getRightBar(bar);
+                    track.add(bar);
+                    break;
+                case LEFT:
+                    bar = Bar.getLeftBar(bar);
+                    track.add(bar);
+                    break;
+                case IDLE:
+                    break;
+                default:
+                    break;
+            }
+        }
+        return track;
 
+    }
+
+
+    public synchronized void setDirection(Direction direction) {
+        this.nowDirection = direction;
+        logger.error("set direction {}", direction);
+    }
+
+    public Direction getNowDirection() {
+        return nowDirection;
+    }
+
+    @Override
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void kill() {
+        isDead = true;
+    }
 }

@@ -57,4 +57,13 @@ public class Point implements Collider {
     //
     //        return false;
     //    }
+
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

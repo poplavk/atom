@@ -1,5 +1,6 @@
 package ru.atom.game.server.model;
 
+import com.sun.jna.platform.win32.WinUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.atom.game.server.geometry.Bar;
@@ -8,6 +9,7 @@ import ru.atom.game.server.geometry.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameSession implements Tickable {
     private static final Logger logger = LogManager.getLogger(GameSession.class);
@@ -15,14 +17,11 @@ public class GameSession implements Tickable {
     public static final int TILE_SIZE = 32;
     public static final int TILES_X = 17;
     public static final int TILES_Y = 13;
-    //    private static AtomicLong idGenerator = new AtomicLong();
 
     private static final Logger log = LogManager.getLogger(GameSession.class);
     private List<GameObject> gameObjects = new ArrayList<>();
 
-    //    private ConcurrentHashMap<Point, GameObject> canvas = new ConcurrentHashMap<>();
-
-    private static int lastId = 0 ;
+    private static int lastId = 0;
 
     public GameSession() {
         generateMap();
@@ -45,8 +44,6 @@ public class GameSession implements Tickable {
     private void generateMap() {
         generateWalls();
         generateWoods();
-
-
     }
 
     private void generateWoods() {
@@ -128,13 +125,25 @@ public class GameSession implements Tickable {
     public synchronized void tick(long elapsed) {
         log.info("tick");
         ArrayList<Temporary> dead = new ArrayList<>();
+        ArrayList<Mortal> kill = new ArrayList<>();
         ArrayList<GameObject> newObjects = new ArrayList<>();
 
         for (GameObject gameObject : gameObjects) {
+            if (gameObject instanceof Fire) {
+                Fire fire = (Fire) gameObject;
+                kill.addAll(boom(fire));
+//                if (newDead.size() != 0) {
+//                    dead.addAll(newDead);
+//                }
+            }
             if (gameObject instanceof Girl) {
-                Bomb bomb = ((Girl) gameObject).getBombForPlant();
+                Girl girl = (Girl) gameObject;
+                Bomb bomb = (girl).getBombForPlant();
                 if (bomb != null) {
                     newObjects.add(bomb);
+                }
+                if (!(girl.getNowDirection() == Movable.Direction.IDLE)) {
+                    move(girl);
                 }
             }
             if (gameObject instanceof Tickable) {
@@ -146,45 +155,72 @@ public class GameSession implements Tickable {
                     newObjects.addAll(((Bomb) gameObject).getBlast());
                 }
             }
+//            if (gameObject instanceof Mortal && ((Mortal) gameObject).isDead()){
+//
+//            }
         }
 
         gameObjects.removeAll(dead);
+        gameObjects.removeAll(kill);
         gameObjects.addAll(newObjects);
     }
 
-    //девочка стоит на месте пока. что-то не то с коллизиями надо думать
-    public void move(Girl girl, Movable.Direction direction) {
-        List<Bar> track = getTrack(girl.getSpeed(), girl.getBar(), direction);
+    public synchronized void move(Girl girl) {
+//        girl.move(girl.getNowDirection());
 
+        List<Bar> track = Girl.getTrack(girl.getSpeed(), girl.getBar(), girl.getNowDirection());
+        List<GameObject> objects = gameObjects.stream().filter(gameObject -> gameObject instanceof Tile)
+                .collect(Collectors.toList());
         for (Bar bar : track) {
-            for (GameObject gameObject : gameObjects) {
+            for (GameObject gameObject : objects) {
                 if (!(gameObject instanceof Girl)) {
-                    if (gameObject instanceof AbstractGameObject) {
-                        boolean colliding = ((AbstractGameObject) gameObject).getBar().isColliding(bar);
+//                    if (gameObject instanceof Tile) {
+                    double dist = getDistance(bar, ((Tile) gameObject).getBar());
+                    if (dist <= 32) {
+                        boolean colliding = bar.isColliding(((Tile) gameObject).getBar());
                         if (colliding) {
                             return;
                         }
                     }
+//                    }
                 }
             }
-            girl.move(direction);
+            girl.move(bar);
         }
+        girl.setDirection(Movable.Direction.IDLE);
     }
 
-    private List<Bar> getTrack(int speed, Bar position, Movable.Direction direction) {
-        List<Bar> track = new ArrayList<>();
-        Bar bar = position;
-        for (int i = 1; i <= speed; i++) {
-            switch (direction) {
-                case UP:
-                    bar = Bar.getUpBar(bar);
-                    track.add(bar);
-                    break;
-                default:
-                    break;
+    public ArrayList<Mortal> boom(Fire fire) {
+        ArrayList<Mortal> dead = new ArrayList<>();
+        Bar bar = fire.getBar();
+        for (GameObject gameObject : gameObjects) {
+            if (!(gameObject instanceof Fire)) {
+                if (gameObject instanceof AbstractGameObject) {
+                    AbstractGameObject abstractGameObject = (AbstractGameObject) gameObject;
+                    double dist = getDistance(bar, abstractGameObject.getBar());
+                    if (dist == 0) {
+                        if ((abstractGameObject.getType().equals("Wall"))) {
+                            break;
+                        } else {
+                            if (gameObject instanceof Mortal) {
+                                ((Mortal) gameObject).kill();
+                                dead.add((Mortal) gameObject);
+                            }
+                        }
+
+                    }
+                }
             }
         }
-        return track;
-
+        return dead;
     }
+
+
+    public static double getDistance(Bar bar1, Bar bar2) {
+        double distanceX = Math.pow(bar1.getStartPoint().getX() - bar2.getStartPoint().getX(), 2);
+        double distanceY = Math.pow(bar1.getStartPoint().getY() - bar2.getStartPoint().getY(), 2);
+        return Math.sqrt(distanceX + distanceY);
+    }
+
+
 }

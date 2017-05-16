@@ -16,7 +16,7 @@ public abstract class AbstractGameObject implements Positionable {
     private final int id;
     private Point position;
     private final String type;
-    private Bar bar;
+    private transient Bar bar;
 
     @JsonCreator
     public AbstractGameObject(@JsonProperty("position") Point point, @JsonProperty("type") String clsName) {
@@ -25,7 +25,14 @@ public abstract class AbstractGameObject implements Positionable {
         this.type = clsName;
         int x = point.getX();
         int y = point.getY();
-        this.bar = new Bar(x, y, x + TILE_SIZE, y + TILE_SIZE);
+        if (this instanceof Girl) {
+            this.bar = new Bar(x, y, x + TILE_SIZE, y + TILE_SIZE);
+        } else if (this instanceof Tile) {
+            this.bar = new Bar(x * TILE_SIZE, y * TILE_SIZE,
+                    x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE + TILE_SIZE);
+        } else {
+            this.bar = new Bar(x, y, x + TILE_SIZE, y + TILE_SIZE);
+        }
     }
 
     public int getId() {
@@ -63,6 +70,8 @@ public abstract class AbstractGameObject implements Positionable {
     public void setPosition(Point newPosition) {
 
         position = newPosition;
+        bar = new Bar(position.getX(), position.getY(),
+                position.getX() + TILE_SIZE, position.getY() + TILE_SIZE);
 
     }
 

@@ -133,7 +133,7 @@ public class Ticker implements Runnable {
         girlsIdToPlayer.values().forEach(gameController::removePlayer);
     }
 
-    public void move(Girl girl, Movable.Direction direction) {
-        gameSession.move(girl, direction);
-    }
+//    public void move(Girl girl, Movable.Direction direction) {
+//        gameSession.move(girl, direction);
+//    }
 }

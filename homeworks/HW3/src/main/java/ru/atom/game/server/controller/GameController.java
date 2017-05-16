@@ -3,17 +3,22 @@ package ru.atom.game.server.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import ru.atom.game.server.geometry.Bar;
 import ru.atom.game.server.geometry.Point;
 import ru.atom.game.server.message.DirectionMsg;
 import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
+import ru.atom.game.server.model.GameObject;
 import ru.atom.game.server.model.GameSession;
 import ru.atom.game.server.model.Girl;
 
+import ru.atom.game.server.model.Movable;
+import ru.atom.game.server.model.Tile;
 import ru.atom.game.server.network.Broker;
 import ru.atom.game.server.util.JsonHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -25,13 +30,11 @@ public class GameController {
     private static final Logger log = LogManager.getLogger(GameController.class);
 
     private final ConcurrentHashMap<String, Girl> playerToGirl = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Girl, Ticker> girlToTicker = new ConcurrentHashMap<>();
     private final List<Ticker> tickers = new ArrayList<>();
 
     private static final Object lock = new Object();
 
     private static final GameController instance = new GameController();
-
 
 
     public static GameController getInstance() {
@@ -44,10 +47,9 @@ public class GameController {
 
     private boolean addPlayerToTicker(String player, Ticker ticker) {
         if (ticker.canAddPlayer(player)) {
-            Girl girl = new Girl(new Point(GameSession.TILE_SIZE,GameSession.TILE_SIZE)); //TODO remake it
+            Girl girl = new Girl(new Point(GameSession.TILE_SIZE, GameSession.TILE_SIZE)); //TODO remake it
             if (playerToGirl.putIfAbsent(player, girl) == null) {
                 ticker.addPlayer(girl, player);
-                girlToTicker.put(girl, ticker);
                 return true;
             }
         }
@@ -91,14 +93,15 @@ public class GameController {
             log.warn("try to do something with null girl");
             return;
         }
-        Ticker ticker = girlToTicker.get(girl);
         Topic topic = msg.getTopic();
         String json = msg.getData();
         log.info("msg.data: {}", json);
         if (topic == Topic.MOVE) {
             DirectionMsg directionMsg = JsonHelper.fromJson(json, DirectionMsg.class);
             // TODO: 5/13/17 move в тике?????
-            ticker.move(girl, directionMsg.getDirection());
+            girl.setDirection(directionMsg.getDirection());
+//            move(ticker, girl, directionMsg.getDirection());
+//            ticker.move(girl, directionMsg.getDirection());
 //            girl.move(directionMsg.getDirection());
             return;
         }
@@ -106,6 +109,8 @@ public class GameController {
             girl.plantBomb();
             return;
         }
+
+
     }
 
 
@@ -125,5 +130,8 @@ public class GameController {
         log.info("remove player: {}", player);
         Broker.getInstance().send(player, Topic.END_MATCH, "");
     }
+
+
+
 
 }

@@ -7,8 +7,14 @@ import ru.atom.game.server.geometry.Point;
 /**
  * Created by mkai on 3/6/17.
  */
-public class Tile extends AbstractGameObject {
+public class Tile extends AbstractGameObject implements Mortal {
     private static final Logger logger = LogManager.getLogger(Tile.class);
+    private transient boolean isDead = false;
+
+    @Override
+    public boolean isDead() {
+        return isDead;
+    }
 
     public enum TileType {
         Wall,
@@ -19,6 +25,10 @@ public class Tile extends AbstractGameObject {
         super(point, tileType.toString());
         logger.info("new Tile! id = {} x = {} y = {} Type = {}", getId(), point.getX(), point.getY());
 
+    }
+
+    public void kill() {
+        isDead = true;
     }
 
 }
