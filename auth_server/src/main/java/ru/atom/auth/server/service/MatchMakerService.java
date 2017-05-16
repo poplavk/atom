@@ -19,6 +19,7 @@ import ru.atom.auth.server.base.Match;
 import ru.atom.auth.server.dao.UserDao;
 import ru.atom.auth.server.mm.Connection;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +108,7 @@ public class MatchMakerService {
         return map;
     }
 
-    public static Integer saveMatch(Match match) {
+    public Integer saveMatch(Match match) {
         Transaction txn = null;
         try (Session session = Database.session()) {
             txn = session.beginTransaction();
@@ -138,4 +139,22 @@ public class MatchMakerService {
         return list;
     }
 
+    public void addResult(@NotNull Integer id, @NotNull String name, @NotNull Integer result ) throws MatchMakerException {
+        Transaction txn = null;
+        try (Session session = Database.session()) {
+            txn = session.beginTransaction();
+            Match match = MatchDao.getInstance().getMatchById(session, id);
+            User user = UserDao.getInstance().getUser(session, name);
+
+            PersonalResult personalResult = new PersonalResult(match, user, result);
+            PersonalResultDao.getInstance().insert(session, personalResult);
+            txn.commit();
+        } catch (RuntimeException ex) {
+            logger.error("Error add user match information!");
+            if (txn != null && txn.isActive()) {
+                txn.rollback();
+            }
+            throw new MatchMakerException("Error add match result");
+        }
+    }
 }

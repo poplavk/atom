@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import ru.atom.auth.server.base.Match;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 public class MatchDao {
     private static final Logger log = LogManager.getLogger(MatchDao.class);
 
@@ -27,6 +29,14 @@ public class MatchDao {
         Match match = (Match) session
                 .createQuery("from Match where id = :value")
                 .setParameter("value", Integer.valueOf(id))
+                .uniqueResult();
+        return match;
+    }
+
+    public Match getMatchById(Session session, Integer id) {
+        Match match = (Match) session
+                .createQuery("from Match where id = :value")
+                .setParameter("value", id)
                 .uniqueResult();
         return match;
     }

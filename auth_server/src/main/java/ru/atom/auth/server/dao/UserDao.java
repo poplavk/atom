@@ -3,6 +3,7 @@ package ru.atom.auth.server.dao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import ru.atom.auth.server.base.Match;
 import ru.atom.auth.server.base.User;
 
 import java.util.List;
@@ -47,5 +48,13 @@ public class UserDao {
                 .createQuery("from User where login = :name")
                 .setParameter("name", name)
                 .uniqueResult();
+    }
+
+    public User getUser(Session session, Integer id) {
+        User match = (User) session
+                .createQuery("from User where id = :value")
+                .setParameter("value", id)
+                .uniqueResult();
+        return match;
     }
 }
