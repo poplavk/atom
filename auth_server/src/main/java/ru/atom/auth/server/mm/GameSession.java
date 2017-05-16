@@ -22,7 +22,7 @@ public class GameSession {
 
 
     public GameSession(Connection[] connections) {
-        this.id = MatchMakerService.saveMatch(new Match());
+        this.id = 0;
         this.connections = connections;
         sendIdToConnections();
     }

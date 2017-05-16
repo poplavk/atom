@@ -24,6 +24,7 @@ public class AuthServer {
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         contexts.setHandlers(new Handler[] {
                 createChatContext(),
+                createMatchMakerContext(),
                 createResourceContext()
         });
 
@@ -36,6 +37,19 @@ public class AuthServer {
         jettyServer.stop();
     }
 
+    private static ContextHandler createResourceContext() {
+        ContextHandler context = new ContextHandler();
+        context.setContextPath("/");
+        ResourceHandler handler = new ResourceHandler();
+        handler.setWelcomeFiles(new String[]{"index.html"});
+
+        String serverRoot = AuthServer.class.getResource("/static").toString();
+        handler.setResourceBase(serverRoot);
+        context.setHandler(handler);
+        return context;
+    }
+
+
     private static ServletContextHandler createChatContext() {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/auth/*");
@@ -45,7 +59,7 @@ public class AuthServer {
 
         jerseyServlet.setInitParameter(
                 "jersey.config.server.provider.packages",
-                "ru.atom.auth.server"
+                "ru.atom.auth.server.resources.auth"
         );
 
         jerseyServlet.setInitParameter(
@@ -56,15 +70,23 @@ public class AuthServer {
         return context;
     }
 
-    private static ContextHandler createResourceContext() {
-        ContextHandler context = new ContextHandler();
-        context.setContextPath("/");
-        ResourceHandler handler = new ResourceHandler();
-        handler.setWelcomeFiles(new String[]{"index.html"});
+    private static ServletContextHandler createMatchMakerContext() {
+        ServletContextHandler context = new ServletContextHandler();
+        context.setContextPath("/mm/*");
+        ServletHolder jerseyServlet = context.addServlet(
+                org.glassfish.jersey.servlet.ServletContainer.class, "/*");
+        jerseyServlet.setInitOrder(0);
 
-        String serverRoot = AuthServer.class.getResource("/static").toString();
-        handler.setResourceBase(serverRoot);
-        context.setHandler(handler);
+        jerseyServlet.setInitParameter(
+                "jersey.config.server.provider.packages",
+                "ru.atom.auth.server.resources.mm"
+        );
+
+        jerseyServlet.setInitParameter(
+                "com.sun.jersey.spi.container.ContainerResponseFilters",
+                CrossBrowserFilter.class.getCanonicalName()
+        );
+
         return context;
     }
 

@@ -10,5 +10,10 @@ public enum Topic {
     REPLICA,
 
     START,
-    END_MATCH, POSSESS, FINISH
+    END_MATCH,
+    POSSESS,
+    FINISH,
+
+    INVALID_TOKEN
+
 }

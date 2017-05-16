@@ -13,6 +13,7 @@ ServerProxy = Class.extend({
     init: function () {
         this.handler['REPLICA'] = gMessages.handleReplica;
         this.handler['POSSESS'] = gMessages.handlePossess;
+        this.handler['END_MATCH'] = gMessages.handleGameOver;
 
         var self = this;
         gInputEngine.subscribe('up', function () {
@@ -39,7 +40,20 @@ ServerProxy = Class.extend({
         this.socket = new WebSocket("ws://" + this.host + "/events");
 
         this.socket.onopen = function () {
-            gGameEngine.serverProxy.socket.send(gMessages.hello("testplayer"));
+            function getCookie(name) {
+              var matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+              ));
+              return matches ? decodeURIComponent(matches[1]) : undefined;
+            }
+            var username = getCookie("user");
+            var token = getCookie("token")
+            if (username === undefined) {
+                //TODO
+                window.location.href = "http://localhost:8080";
+            } else {
+                gGameEngine.serverProxy.socket.send(gMessages.hello(username, token));
+            }
         };
 
         this.socket.onclose = function (event) {

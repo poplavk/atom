@@ -1,27 +1,24 @@
 package ru.atom.game.server.controller;
 
+import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import ru.atom.game.server.geometry.Bar;
+import ru.atom.game.server.communication.MatchMakerClient;
 import ru.atom.game.server.geometry.Point;
 import ru.atom.game.server.message.DirectionMsg;
 import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
-import ru.atom.game.server.model.GameObject;
 import ru.atom.game.server.model.GameSession;
 import ru.atom.game.server.model.Girl;
 
-import ru.atom.game.server.model.Movable;
-import ru.atom.game.server.model.Tile;
 import ru.atom.game.server.network.Broker;
 import ru.atom.game.server.util.JsonHelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by dmbragin on 5/3/17.
@@ -125,13 +122,19 @@ public class GameController {
         log.info("Ticker was removed");
     }
 
-    public void removePlayer(String player) {
+    public void removePlayer(String player, Integer gameId, boolean isWinner) {
         playerToGirl.remove(player);
         log.info("remove player: {}", player);
-        Broker.getInstance().send(player, Topic.END_MATCH, "");
+        String status = isWinner ? "win" : "lose";
+        Broker.getInstance().send(player, Topic.END_MATCH, status);
+        int result = isWinner ? 1 : 0;
+        try {
+            Response response = MatchMakerClient.addResult(gameId, player, result);
+            log.info("response to save math: {}", response.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
-
 
 
 }

@@ -2,7 +2,9 @@ package ru.atom.game.server.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.server.Response;
 import org.jetbrains.annotations.NotNull;
+import ru.atom.game.server.communication.MatchMakerClient;
 import ru.atom.game.server.message.Topic;
 import ru.atom.game.server.model.GameObject;
 import ru.atom.game.server.model.GameSession;
@@ -10,8 +12,13 @@ import ru.atom.game.server.model.Girl;
 import ru.atom.game.server.model.Movable;
 import ru.atom.game.server.network.Broker;
 
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
@@ -35,10 +42,22 @@ public class Ticker implements Runnable {
 
 
     public Ticker() {
-        //TODO add save info to db
-        //        this.id = MatchMakerService.saveMatch(new Match());
-        this.id = 0;
+        Integer id1;
+        okhttp3.Response response = null;
+        try {
+            response = MatchMakerClient.addMatch();
+            if (response.code() == 200) {
+                id1 = Integer.valueOf(response.body().string());
+            } else {
+                id1 = 0;
+            }
+            log.info("response to add math: {}", response.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            id1 = 0;
+        }
 
+        this.id = id1;
     }
 
     public long getId() {
@@ -86,11 +105,11 @@ public class Ticker implements Runnable {
         //if (tickNumber == 500) {
         //    deadPlayers.addAll(girlsIdToPlayer.keySet());
         //}
-        
+
         deadPlayers.forEach(id -> {
             String player = girlsIdToPlayer.get(id);
             girlsIdToPlayer.remove(id);
-            gameController.removePlayer(player);
+            gameController.removePlayer(player, id, false);
         });
 
         girlsIdToPlayer.values().forEach(player -> {
@@ -116,8 +135,7 @@ public class Ticker implements Runnable {
         tickNumber++;
 
         //TODO add normal game over
-        return tickNumber <= 1000000;
-//        return true;
+        return tickNumber <= 1000;
     }
 
     @Override
@@ -130,7 +148,9 @@ public class Ticker implements Runnable {
 
         }
         gameController.removeTicker(this);
-        girlsIdToPlayer.values().forEach(gameController::removePlayer);
+        girlsIdToPlayer.values().forEach(s -> {
+            gameController.removePlayer(s, id, true);
+        });
     }
 
 //    public void move(Girl girl, Movable.Direction direction) {

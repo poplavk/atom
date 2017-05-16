@@ -4,10 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
+import ru.atom.game.server.communication.MatchMakerClient;
 import ru.atom.game.server.controller.GameController;
+import ru.atom.game.server.message.HelloDataMsg;
 import ru.atom.game.server.message.Message;
 import ru.atom.game.server.message.Topic;
 import ru.atom.game.server.util.JsonHelper;
+
+import java.io.IOException;
 
 
 public class Broker {
@@ -36,10 +40,7 @@ public class Broker {
         Topic topic = message.getTopic();
 
         if (topic == Topic.HELLO) {
-            String player = message.getData();
-            connectionPool.add(session, player);
-            gameController.addPlayerAndStartGame(player);
-
+            onMsgHello(message, session);
             return;
         }
 
@@ -51,12 +52,21 @@ public class Broker {
 
     public void send(@NotNull String player, @NotNull Topic topic, @NotNull Object object) {
         String message = JsonHelper.toJson(new Message(topic, object));
+
         Session session = connectionPool.getSession(player);
         if (session != null) {
             log.debug("msg to {}: {}", player, message);
             connectionPool.send(session, message);
         }
+
     }
+
+    public void send(@NotNull Session session, @NotNull Topic topic, @NotNull Object object) {
+        String message = JsonHelper.toJson(new Message(topic, object));
+        log.debug("msg to session: {}", message);
+        connectionPool.send(session, message);
+    }
+
 
     public void broadcast(@NotNull Topic topic, @NotNull Object object) {
         String message = JsonHelper.toJson(new Message(topic, object));
@@ -64,4 +74,30 @@ public class Broker {
         connectionPool.broadcast(message);
     }
 
+    private void onMsgHello(Message message, Session session) {
+        HelloDataMsg msg = JsonHelper.fromJson(message.getData(), HelloDataMsg.class);
+        String player = msg.getUser();
+        String token = msg.getToken();
+
+        boolean isInvalidToken = true;
+        String errorMsg = "";
+        try {
+            okhttp3.Response response = MatchMakerClient.isUserLogined(token);
+            if (response.code() == 200) {
+                isInvalidToken = false;
+            } else {
+                errorMsg = response.toString();
+            }
+        } catch (IOException e) {
+            errorMsg = e.getMessage();
+        }
+
+        if (isInvalidToken) {
+            send(session, Topic.INVALID_TOKEN, errorMsg);
+            return;
+        }
+
+        connectionPool.add(session, player);
+        gameController.addPlayerAndStartGame(player);
+    }
 }
