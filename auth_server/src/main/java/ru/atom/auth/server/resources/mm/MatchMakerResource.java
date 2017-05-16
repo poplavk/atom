@@ -64,7 +64,7 @@ public class MatchMakerResource {
         if (id == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Can not get info about user match").build();
         }
-        return Response.status(Response.Status.OK).entity("id").build();
+        return Response.status(Response.Status.OK).entity(id).build();
     }
 
     @Authorized

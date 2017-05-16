@@ -1,8 +1,10 @@
 package ru.atom.game.server.controller;
 
+import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import ru.atom.game.server.communication.MatchMakerClient;
 import ru.atom.game.server.geometry.Point;
 import ru.atom.game.server.message.DirectionMsg;
 import ru.atom.game.server.message.Message;
@@ -12,6 +14,7 @@ import ru.atom.game.server.model.Girl;
 import ru.atom.game.server.network.Broker;
 import ru.atom.game.server.util.JsonHelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -114,11 +117,18 @@ public class GameController {
         log.info("Ticker was removed");
     }
 
-    public void removePlayer(String player, boolean isWinner) {
+    public void removePlayer(String player, Integer gameId, boolean isWinner) {
         playerToGirl.remove(player);
         log.info("remove player: {}", player);
         String status = isWinner ? "win" : "lose";
         Broker.getInstance().send(player, Topic.END_MATCH, status);
+        int result = isWinner ? 1 : 0;
+        try {
+            Response response = MatchMakerClient.addResult(gameId, player, result);
+            log.info("response to save math: {}", response.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

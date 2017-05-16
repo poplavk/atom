@@ -1,10 +1,17 @@
 package ru.atom.game.server.communication;
 
-import okhttp3.*;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
 public class MatchMakerClient {
+    private static final Logger log = LogManager.getLogger(MatchMakerClient.class);
     private static final OkHttpClient client = new OkHttpClient();
     //TODO add properties
     private static final String PROTOCOL = "http://";
@@ -38,16 +45,21 @@ public class MatchMakerClient {
         Request request = new Request.Builder()
                 .get()
                 .header("Authorization", "Bearer " + MatchMakerClient.serverToken)
-                .url(PROTOCOL + HOST + PORT + "/auth/add-match")
+                .url(PROTOCOL + HOST + PORT + "/mm/add-match")
                 .build();
         return client.newCall(request).execute();
     }
 
     public static Response addResult(Integer id,String name, Integer result ) throws IOException {
+        RequestBody formBody = new FormBody.Builder()
+                .add("match", String.valueOf(id))
+                .add("name", name)
+                .add("result", String.valueOf(result))
+                .build();
         Request request = new Request.Builder()
-                .get()
+                .post(formBody)
                 .header("Authorization", "Bearer " + MatchMakerClient.serverToken)
-                .url(PROTOCOL + HOST + PORT + "/auth/add-result")
+                .url(PROTOCOL + HOST + PORT + "/mm/add-result")
                 .build();
         return client.newCall(request).execute();
     }
