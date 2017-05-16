@@ -4,7 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.atom.auth.server.service.AuthService;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -95,6 +101,7 @@ public class AuthResource {
     @GET
     @Path("/is-logined")
     public Response isLogined() {
+        logger.info("Requested /is-logined");
         return Response.status(Response.Status.OK).build();
     }
 
