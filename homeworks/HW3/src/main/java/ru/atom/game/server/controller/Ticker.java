@@ -24,6 +24,7 @@ import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
 
 public class Ticker implements Runnable {
+    private static final long MAX_TICK = 5000;
     private static final Logger log = LogManager.getLogger(Ticker.class);
     private static final int FPS = 60;
     private static final long FRAME_TIME = 1000 / FPS;
@@ -135,7 +136,7 @@ public class Ticker implements Runnable {
         tickNumber++;
 
         //TODO add normal game over
-        return tickNumber <= 1000;
+        return tickNumber <= MAX_TICK;
     }
 
     @Override

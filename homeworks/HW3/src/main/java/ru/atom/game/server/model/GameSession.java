@@ -204,11 +204,12 @@ public class GameSession implements Tickable {
                 if (!(gameObject instanceof Girl)) {
                     if (gameObject instanceof Tile) {
                     double dist = getDistance(bar, ((Tile) gameObject).getBar());
-                    if (dist <= 32) {
-                        boolean colliding = bar.isColliding(((Tile) gameObject).getBar());
-                        if (colliding) {
-                            return;
-                        }
+                    if (dist < 32) {
+                        return;
+                        //boolean colliding = bar.isColliding(((Tile) gameObject).getBar());
+                        //if (colliding) {
+                        //    return;
+                        //}
                     }
                     }
                 }
@@ -226,7 +227,7 @@ public class GameSession implements Tickable {
                 if (gameObject instanceof AbstractGameObject) {
                     AbstractGameObject abstractGameObject = (AbstractGameObject) gameObject;
                     double dist = getDistance(bar, abstractGameObject.getBar());
-                    if (dist == 0) {
+                    if (dist < 32) {
                         if ((abstractGameObject.getType().equals("Wall"))) {
                             break;
                         } else {
@@ -244,9 +245,9 @@ public class GameSession implements Tickable {
 
 
     public static double getDistance(Bar bar1, Bar bar2) {
-        double distanceX = Math.pow(bar1.getStartPoint().getX() - bar2.getStartPoint().getX(), 2);
-        double distanceY = Math.pow(bar1.getStartPoint().getY() - bar2.getStartPoint().getY(), 2);
-        return Math.sqrt(distanceX + distanceY);
+        double distanceX = Math.abs(bar1.getStartPoint().getX() - bar2.getStartPoint().getX());
+        double distanceY = Math.abs(bar1.getStartPoint().getY() - bar2.getStartPoint().getY());
+        return Math.max(distanceX, distanceY);
     }
 
 
