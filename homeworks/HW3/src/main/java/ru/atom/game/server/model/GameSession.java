@@ -136,6 +136,16 @@ public class GameSession implements Tickable {
         ArrayList<GameObject> newObjects = new ArrayList<>();
 
         for (GameObject gameObject : gameObjects) {
+            if (gameObject instanceof Girl) {
+                Girl girl = (Girl) gameObject;
+                Bomb bomb = (girl).getBombForPlant();
+                if (bomb != null) {
+                    newObjects.add(bomb);
+                }
+                if (!(girl.getNowDirection() == Movable.Direction.IDLE)) {
+                    move(girl);
+                }
+            }
             if (gameObject instanceof Fire) {
                 Fire fire = (Fire) gameObject;
                 Bar bar = fire.getBar();
@@ -144,7 +154,7 @@ public class GameSession implements Tickable {
                         if (gameObj instanceof AbstractGameObject) {
                             AbstractGameObject abstractGameObject = (AbstractGameObject) gameObj;
                             double dist = getDistance(bar, abstractGameObject.getBar());
-                            if (dist <= 5) {
+                            if (dist < 32) {
                                 if ((abstractGameObject.getType().equals("Pawn"))) {
                                     ((Girl) gameObj).kill();
                                     deadGirl.add((Girl) gameObj);
@@ -160,16 +170,6 @@ public class GameSession implements Tickable {
                             }
                         }
                     }
-                }
-            }
-            if (gameObject instanceof Girl) {
-                Girl girl = (Girl) gameObject;
-                Bomb bomb = (girl).getBombForPlant();
-                if (bomb != null) {
-                    newObjects.add(bomb);
-                }
-                if (!(girl.getNowDirection() == Movable.Direction.IDLE)) {
-                    move(girl);
                 }
             }
             if (gameObject instanceof Tickable) {
@@ -202,7 +202,7 @@ public class GameSession implements Tickable {
         for (Bar bar : track) {
             for (GameObject gameObject : objects) {
                 if (!(gameObject instanceof Girl)) {
-//                    if (gameObject instanceof Tile) {
+                    if (gameObject instanceof Tile) {
                     double dist = getDistance(bar, ((Tile) gameObject).getBar());
                     if (dist <= 32) {
                         boolean colliding = bar.isColliding(((Tile) gameObject).getBar());
@@ -210,7 +210,7 @@ public class GameSession implements Tickable {
                             return;
                         }
                     }
-//                    }
+                    }
                 }
             }
             girl.move(bar);

@@ -170,6 +170,8 @@ public class Girl extends AbstractGameObject implements Movable, Mortal {
     }
 
     public synchronized void kill() {
+
+        logger.info("Girl {} kill!", super.getId());
         isDead = true;
     }
 
