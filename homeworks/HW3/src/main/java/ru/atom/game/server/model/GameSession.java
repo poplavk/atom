@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameSession implements Tickable {
+public class GameSession {
     private static final Logger logger = LogManager.getLogger(GameSession.class);
 
     public static final int TILE_SIZE = 32;
@@ -127,8 +127,7 @@ public class GameSession implements Tickable {
 
     }
 
-    @Override
-    public synchronized void tick(long elapsed) {
+    public synchronized List<Integer> tick(long elapsed) {
         log.debug("tick");
         ArrayList<Temporary> dead = new ArrayList<>();
         ArrayList<Tile> deadTile = new ArrayList<>();
@@ -188,9 +187,9 @@ public class GameSession implements Tickable {
         gameObjects.removeAll(deadTile);
         gameObjects.removeAll(deadGirl);
         gameObjects.addAll(newObjects);
-        if (ticker != null && deadGirl.size() != 0) {
-             ticker.removePlayers(deadGirl);
-        }
+
+
+        return deadGirl.stream().map(AbstractGameObject::getId).collect(Collectors.toList());
     }
 
     public synchronized void move(Girl girl) {
@@ -204,11 +203,12 @@ public class GameSession implements Tickable {
                 if (!(gameObject instanceof Girl)) {
                     if (gameObject instanceof Tile) {
                     double dist = getDistance(bar, ((Tile) gameObject).getBar());
-                    if (dist <= 32) {
-                        boolean colliding = bar.isColliding(((Tile) gameObject).getBar());
-                        if (colliding) {
-                            return;
-                        }
+                    if (dist < 32) {
+                        return;
+                        //boolean colliding = bar.isColliding(((Tile) gameObject).getBar());
+                        //if (colliding) {
+                        //    return;
+                        //}
                     }
                     }
                 }
@@ -226,7 +226,7 @@ public class GameSession implements Tickable {
                 if (gameObject instanceof AbstractGameObject) {
                     AbstractGameObject abstractGameObject = (AbstractGameObject) gameObject;
                     double dist = getDistance(bar, abstractGameObject.getBar());
-                    if (dist == 0) {
+                    if (dist < 32) {
                         if ((abstractGameObject.getType().equals("Wall"))) {
                             break;
                         } else {
@@ -244,9 +244,9 @@ public class GameSession implements Tickable {
 
 
     public static double getDistance(Bar bar1, Bar bar2) {
-        double distanceX = Math.pow(bar1.getStartPoint().getX() - bar2.getStartPoint().getX(), 2);
-        double distanceY = Math.pow(bar1.getStartPoint().getY() - bar2.getStartPoint().getY(), 2);
-        return Math.sqrt(distanceX + distanceY);
+        double distanceX = Math.abs(bar1.getStartPoint().getX() - bar2.getStartPoint().getX());
+        double distanceY = Math.abs(bar1.getStartPoint().getY() - bar2.getStartPoint().getY());
+        return Math.max(distanceX, distanceY);
     }
 
 
