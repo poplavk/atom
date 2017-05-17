@@ -95,7 +95,7 @@ public class Bar implements Collider {
     public static Bar getDownBar(Bar bar) {
         int x1 = bar.startPoint.getX();
         int y1 = bar.startPoint.getY() - 1;
-        int x2 = bar.endPoint.getY();
+        int x2 = bar.endPoint.getX();
         int y2 = bar.endPoint.getY() - 1;
         return new Bar(x1, y1, x2, y2);
     }
