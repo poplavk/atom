@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameSession implements Tickable {
+public class GameSession {
     private static final Logger logger = LogManager.getLogger(GameSession.class);
 
     public static final int TILE_SIZE = 32;
@@ -127,8 +127,7 @@ public class GameSession implements Tickable {
 
     }
 
-    @Override
-    public synchronized void tick(long elapsed) {
+    public synchronized List<Integer> tick(long elapsed) {
         log.debug("tick");
         ArrayList<Temporary> dead = new ArrayList<>();
         ArrayList<Tile> deadTile = new ArrayList<>();
@@ -188,9 +187,9 @@ public class GameSession implements Tickable {
         gameObjects.removeAll(deadTile);
         gameObjects.removeAll(deadGirl);
         gameObjects.addAll(newObjects);
-        if (ticker != null && deadGirl.size() != 0) {
-             ticker.removePlayers(deadGirl);
-        }
+
+
+        return deadGirl.stream().map(AbstractGameObject::getId).collect(Collectors.toList());
     }
 
     public synchronized void move(Girl girl) {

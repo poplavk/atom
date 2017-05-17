@@ -11,6 +11,7 @@ import ru.atom.game.server.model.GameSession;
 import ru.atom.game.server.model.Girl;
 import ru.atom.game.server.model.Movable;
 import ru.atom.game.server.network.Broker;
+import sun.awt.windows.ThemeReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -95,16 +96,10 @@ public class Ticker implements Runnable {
         return gameSession;
     }
 
-    private void act(long time) {
+    private boolean act(long time) {
         //Your logic here
-        List<Integer> deadPlayers = new ArrayList<>();
         //TODO gameSession must return deadPlayers
-        gameSession.tick(time);
-
-        //TODO remove it
-        //if (tickNumber == 500) {
-        //    deadPlayers.addAll(girlsIdToPlayer.keySet());
-        //}
+        List<Integer> deadPlayers = gameSession.tick(time);
 
         deadPlayers.forEach(id -> {
             String player = girlsIdToPlayer.get(id);
@@ -115,6 +110,8 @@ public class Ticker implements Runnable {
         girlsIdToPlayer.values().forEach(player -> {
             broker.send(player, Topic.REPLICA, gameSession.getGameObjects());
         });
+
+        return girlsIdToPlayer.size() != 0;
     }
 
     public long getTickNumber() {
@@ -123,7 +120,7 @@ public class Ticker implements Runnable {
 
     private boolean tick() {
         long started = System.currentTimeMillis();
-        act(FRAME_TIME);
+        boolean gameContinue = act(FRAME_TIME);
         long elapsed = System.currentTimeMillis() - started;
         if (elapsed < FRAME_TIME) {
             log.info("All tick finish at {} ms", elapsed);
@@ -135,7 +132,7 @@ public class Ticker implements Runnable {
         tickNumber++;
 
         //TODO add normal game over
-        return tickNumber <= 1000;
+        return gameContinue && tickNumber <= 100000;
     }
 
     @Override
@@ -144,7 +141,7 @@ public class Ticker implements Runnable {
             broker.send(player, Topic.POSSESS, id);
         });
 
-        while (tick()) {
+        while (tick() && !Thread.currentThread().isInterrupted()) {
 
         }
         gameController.removeTicker(this);
@@ -152,10 +149,6 @@ public class Ticker implements Runnable {
             gameController.removePlayer(s, id, true);
         });
     }
-
-//    public void move(Girl girl, Movable.Direction direction) {
-//        gameSession.move(girl, direction);
-//    }
 
 
     public synchronized void removePlayers(ArrayList<Girl> girls) {
