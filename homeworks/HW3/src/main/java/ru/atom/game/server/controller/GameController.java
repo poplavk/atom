@@ -148,12 +148,12 @@ public class GameController {
     }
 
     public void removePlayer(String player, Integer gameId, boolean isWinner) {
-        playerToGirl.remove(player);
         log.info("remove player: {}", player);
         String status = isWinner ? "win" : "lose";
         Broker.getInstance().send(player, Topic.END_MATCH, status);
         int result = isWinner ? 1 : 0;
         try {
+            playerToGirl.remove(player);
             Response response = MatchMakerClient.addResult(gameId, player, result);
             log.info("response to save math: {} {} {}",
                     response.toString(),

@@ -18,7 +18,6 @@ import ru.atom.auth.server.storages.Database;
 import ru.atom.auth.server.base.Match;
 import ru.atom.auth.server.dao.UserDao;
 import ru.atom.auth.server.mm.Connection;
-import ru.atom.auth.server.dao.jdbcDao;
 
 import javax.validation.constraints.NotNull;
 import java.sql.DriverManager;
@@ -166,22 +165,22 @@ public class MatchMakerService {
     }
 
     public Integer getResultsJDBC(String name) {
-        String QUERY = "select count(*) " +
-                "from mm.personal_result as m" +
-                "join auth.user as u" +
-                "  on m.user_id = u.id " +
-                "where u.login='" + name + "' and m.score=1;";
-
-        try (java.sql.Connection con = jdbcDao.getConnection();
-             Statement stm = con.createStatement()
-        ) {
-            ResultSet rs = stm.executeQuery(QUERY);
-            while (rs.next())
-            {
-                System.out.println(Integer.parseInt(rs.getString(1)));
-                return Integer.parseInt(rs.getString(1));
-            }
-        } catch (SQLException e) {}
+//        String QUERY = "select count(*) " +
+//                "from mm.personal_result as m" +
+//                "join auth.user as u" +
+//                "  on m.user_id = u.id " +
+//                "where u.login='" + name + "' and m.score=1;";
+//
+//        try (java.sql.Connection con = jdbcDao.getConnection();
+//             Statement stm = con.createStatement()
+//        ) {
+//            ResultSet rs = stm.executeQuery(QUERY);
+//            while (rs.next())
+//            {
+//                System.out.println(Integer.parseInt(rs.getString(1)));
+//                return Integer.parseInt(rs.getString(1));
+//            }
+//        } catch (SQLException e) {}
         return 0;
     }
 }

@@ -136,7 +136,7 @@ GameEngine = Class.extend({
             for (var j = 0; j < this.tilesX; j++) {
                 // Grass tiles
                 var img = new Image();
-                img.src = "img/Borders.png";
+                img.src = "img/tile_grass.png";
 
                 var bitmap = new createjs.Bitmap(img);
 

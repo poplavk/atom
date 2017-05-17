@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import ru.atom.auth.server.base.PersonalResult;
 import ru.atom.auth.server.base.User;
 
+import javax.persistence.Query;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collector;
 
@@ -32,8 +34,10 @@ public class PersonalResultDao {
         log.warn("SQL USER {}", user.getId());
         String sql = "select * from mm.personal_result where user_id=:userId;";
 
-        return session.createSQLQuery(sql).addEntity(PersonalResult.class)
-                .setParameter("userId", user.getId()).getResultList();
+        Query query = session.createQuery("from where PersonalResult user_id = :userId")
+                .setParameter("userId", user.getId());
+
+        return Collections.checkedList(query.getResultList(), PersonalResult.class);
     }
 
 

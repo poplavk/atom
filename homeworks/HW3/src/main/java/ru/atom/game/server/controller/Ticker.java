@@ -31,7 +31,7 @@ public class Ticker implements Runnable {
     private static final long FRAME_TIME = 1000 / FPS;
     private long tickNumber = 0;
 
-    public static final int PLAYERS_IN_GAME = 1;
+    public static final int PLAYERS_IN_GAME = 2;
     private final Integer id;
 
     private final Broker broker = Broker.getInstance();
@@ -109,14 +109,16 @@ public class Ticker implements Runnable {
         deadPlayers.forEach(id -> {
             String player = girlsIdToPlayer.get(id);
             girlsIdToPlayer.remove(id);
-            gameController.removePlayer(player, this.id, false);
+            if (player != null) {
+                gameController.removePlayer(player, this.id, false);
+            }
         });
 
         girlsIdToPlayer.values().forEach(player -> {
             broker.send(player, Topic.REPLICA, gameSession.getGameObjects());
         });
 
-        return girlsIdToPlayer.size() != 0;
+        return girlsIdToPlayer.size() != 1;
     }
 
     public long getTickNumber() {
