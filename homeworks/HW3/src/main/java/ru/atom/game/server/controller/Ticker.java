@@ -109,7 +109,7 @@ public class Ticker implements Runnable {
         deadPlayers.forEach(id -> {
             String player = girlsIdToPlayer.get(id);
             girlsIdToPlayer.remove(id);
-            gameController.removePlayer(player, id, false);
+            gameController.removePlayer(player, this.id, false);
         });
 
         girlsIdToPlayer.values().forEach(player -> {
@@ -150,10 +150,10 @@ public class Ticker implements Runnable {
         while (tick() && !Thread.currentThread().isInterrupted()) {
 
         }
-        gameController.removeTicker(this);
         girlsIdToPlayer.values().forEach(s -> {
             gameController.removePlayer(s, id, true);
         });
+        gameController.removeTicker(this);
     }
 
 

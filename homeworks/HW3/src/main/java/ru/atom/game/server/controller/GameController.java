@@ -155,7 +155,11 @@ public class GameController {
         int result = isWinner ? 1 : 0;
         try {
             Response response = MatchMakerClient.addResult(gameId, player, result);
-            log.info("response to save math: {}", response.toString());
+            log.info("response to save math: {} {} {}",
+                    response.toString(),
+                    response.body().toString(),
+                    response.message().toString());
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -143,7 +143,9 @@ public class MatchMakerService {
         Transaction txn = null;
         try (Session session = Database.session()) {
             txn = session.beginTransaction();
-            Match match = MatchDao.getInstance().getMatchById(session, id);
+            //MatchDao.getInstance().getMatchById(session, id);
+            Match match = new Match();
+            match.setId(id);
             User user = UserDao.getInstance().getUser(session, name);
 
             PersonalResult personalResult = new PersonalResult(match, user, result);

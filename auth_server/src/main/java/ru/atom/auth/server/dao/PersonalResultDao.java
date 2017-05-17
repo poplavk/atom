@@ -8,6 +8,7 @@ import ru.atom.auth.server.base.PersonalResult;
 import ru.atom.auth.server.base.User;
 
 import java.util.List;
+import java.util.stream.Collector;
 
 public class PersonalResultDao {
     private static final Logger log = LogManager.getLogger(PersonalResultDao.class);
@@ -28,9 +29,11 @@ public class PersonalResultDao {
 
     public List<PersonalResult> getByUsername(Session session, String name) {
         User user = UserDao.getInstance().getByName(session, name);
-        return (List<PersonalResult>) session
-                .createQuery("from PersonalResult where user_id = :user")
-                .setParameter("user", user).list();
+        log.warn("SQL USER {}", user.getId());
+        String sql = "select * from mm.personal_result where user_id=:userId;";
+
+        return session.createSQLQuery(sql).addEntity(PersonalResult.class)
+                .setParameter("userId", user.getId()).getResultList();
     }
 
 

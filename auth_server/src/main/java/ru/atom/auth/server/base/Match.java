@@ -34,4 +34,8 @@ public class Match {
                 ", date=" + date +
                 '}';
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
