@@ -15,7 +15,7 @@ public class MatchMakerClient {
     private static final OkHttpClient client = new OkHttpClient();
     //TODO add properties
     private static final String PROTOCOL = "http://";
-    private static final String HOST = "bombergirl.io";
+    private static final String HOST = "auth_service";
     private static final String PORT = ":8080";
 
     private static String serverToken = null;
