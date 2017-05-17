@@ -43,8 +43,33 @@ public class GameController {
     }
 
     private boolean addPlayerToTicker(String player, Ticker ticker) {
-        if (ticker.canAddPlayer(player)) {
-            Girl girl = new Girl(new Point(GameSession.TILE_SIZE, GameSession.TILE_SIZE)); //TODO remake it
+        int playersLeft = ticker.canAddPlayer(player);
+        if (playersLeft != 0) {
+            int posX;
+            int posY;
+            switch (playersLeft) {
+                case 4:
+                    posX = GameSession.TILE_SIZE;
+                    posY = GameSession.TILE_SIZE;
+                    break;
+                case 3:
+                    posX = GameSession.TILE_SIZE * (GameSession.TILES_X - 2);
+                    posY = GameSession.TILE_SIZE;
+                    break;
+                case 2:
+                    posX = GameSession.TILE_SIZE;
+                    posY = GameSession.TILE_SIZE * (GameSession.TILES_Y - 2);
+                    break;
+                case 1:
+                    posX = GameSession.TILE_SIZE * (GameSession.TILES_X - 2);
+                    posY = GameSession.TILE_SIZE * (GameSession.TILES_Y - 2);
+                    break;
+                default:
+                    posX = 0;
+                    posY = 0;
+            }
+
+            Girl girl = new Girl(new Point(posX, posY));
             if (playerToGirl.putIfAbsent(player, girl) == null) {
                 ticker.addPlayer(girl, player);
                 return true;

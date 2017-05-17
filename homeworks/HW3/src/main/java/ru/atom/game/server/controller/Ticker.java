@@ -66,8 +66,12 @@ public class Ticker implements Runnable {
         return id;
     }
 
-    public boolean canAddPlayer(String player) {
-        return players.size() < PLAYERS_IN_GAME && players.add(player);
+    public int canAddPlayer(String player) {
+        int size = players.size();
+        if (players.add(player)) {
+            return PLAYERS_IN_GAME - size;
+        }
+        return 0;
     }
 
     public boolean canRestorePlayer(@NotNull String player) {

@@ -1,6 +1,6 @@
 ServerProxy = Class.extend({
 
-    host: "localhost:8089",
+    host: "bombergirl.io:8089",
 
     socket: null,
 
@@ -50,7 +50,7 @@ ServerProxy = Class.extend({
             var token = getCookie("token")
             if (username === undefined) {
                 //TODO
-                window.location.href = "http://localhost:8080";
+                window.location.href = "http://bombergirl.io:8080";
             } else {
                 gGameEngine.serverProxy.socket.send(gMessages.hello(username, token));
             }
