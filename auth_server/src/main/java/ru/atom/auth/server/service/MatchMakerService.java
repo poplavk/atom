@@ -18,8 +18,13 @@ import ru.atom.auth.server.storages.Database;
 import ru.atom.auth.server.base.Match;
 import ru.atom.auth.server.dao.UserDao;
 import ru.atom.auth.server.mm.Connection;
+import ru.atom.auth.server.dao.jdbcDao;
 
 import javax.validation.constraints.NotNull;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +34,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MatchMakerService {
     private static final Logger logger = LogManager.getLogger(MatchMakerService.class);
-    private static ConcurrentHashMap<String, Connection> joins = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, ru.atom.auth.server.mm.Connection> joins = new ConcurrentHashMap<>();
 
     public long join(String name, String token) {
-        Connection connection;
+        ru.atom.auth.server.mm.Connection connection;
         if (!joins.containsKey(name)) {
-            connection = new Connection(token, name);
+            connection = new ru.atom.auth.server.mm.Connection(token, name);
             joins.put(name, connection);
             ThreadSafeQueue.getInstance().offer(connection);
         } else {
@@ -158,5 +163,25 @@ public class MatchMakerService {
             }
             throw new MatchMakerException("Error add match result");
         }
+    }
+
+    public Integer getResultsJDBC(String name) {
+        String QUERY = "select count(*) " +
+                "from mm.personal_result as m" +
+                "join auth.user as u" +
+                "  on m.user_id = u.id " +
+                "where u.login='" + name + "' and m.score=1;";
+
+        try (java.sql.Connection con = jdbcDao.getConnection();
+             Statement stm = con.createStatement()
+        ) {
+            ResultSet rs = stm.executeQuery(QUERY);
+            while (rs.next())
+            {
+                System.out.println(Integer.parseInt(rs.getString(1)));
+                return Integer.parseInt(rs.getString(1));
+            }
+        } catch (SQLException e) {}
+        return 0;
     }
 }

@@ -105,8 +105,8 @@ public class MatchMakerResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("name can not be null").build();
         }
         logger.info("get-result for  {}",name);
-        List<PersonalResult> list = matchMakerService.getResults(name);
-        if (list == null) {
+        Integer result = matchMakerService.getResultsJDBC(name);
+        if (result == 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Can not get info about user match").build();
         }
         //TODO add show info
